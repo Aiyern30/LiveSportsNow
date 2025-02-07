@@ -1,33 +1,30 @@
-// NBAStandings.tsx
-
 "use client";
-import { StandingsData } from "@/type/NBA/standing";
+import { NBAGame } from "@/type/NBA/game";
 import { fetchNBAGames } from "@/utils/NBA/fetchNBAGames";
 import { useEffect, useState } from "react";
 
 const NBAStandings = () => {
-  const [nbaStandings, setNbaStandings] = useState<StandingsData | null>(null);
-  console.log(nbaStandings);
+  const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const getNBAStandings = async () => {
+    const getNBAGames = async () => {
       try {
         const data = await fetchNBAGames();
-        setNbaStandings(data);
+        setNbaGames(data);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          setError(`Failed to fetch NBA standings: ${error.message}`);
+          setError(`Failed to fetch NBA games: ${error.message}`);
         } else {
-          setError("An unknown error occurred while fetching NBA standings.");
+          setError("An unknown error occurred while fetching NBA games.");
         }
       } finally {
         setLoading(false);
       }
     };
 
-    getNBAStandings();
+    getNBAGames();
   }, []);
 
   if (loading) return <div>Loading...</div>;
@@ -35,8 +32,22 @@ const NBAStandings = () => {
 
   return (
     <div>
-      <h1>NBA Standings</h1>
-      {/* Displaying standings here */}
+      <h1>NBA Games</h1>
+      <ul>
+        {nbaGames.map((game) => (
+          <li key={game.id}>
+            <p>
+              <strong>{game.teams.home.name}</strong> vs{" "}
+              <strong>{game.teams.away.name}</strong>
+            </p>
+            <p>
+              Score: {game.scores.home.total} - {game.scores.away.total}
+            </p>
+            <p>Venue: {game.venue}</p>
+            <p>Date: {new Date(game.date).toLocaleString()}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
