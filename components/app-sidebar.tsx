@@ -2,17 +2,11 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+  FaBasketballBall,
+  FaFootballBall,
+  FaFutbol,
+  FaMedal,
+} from "react-icons/fa";
 
 import {
   Sidebar,
@@ -22,148 +16,190 @@ import {
   SidebarRail,
 } from "./ui";
 import { NavMain } from "./nav-main";
-import { NavProjects } from "./nav-projects";
+// import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
-import { TeamSwitcher } from "./team-switcher";
+// import { TeamSwitcher } from "./team-switcher";
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "https://avatars.githubusercontent.com/u/30559529",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
+  // teams: [
+  //   {
+  //     name: "Acme Inc",
+  //     logo: GalleryVerticalEnd,
+  //     plan: "Enterprise",
+  //   },
+  //   {
+  //     name: "Acme Corp.",
+  //     logo: AudioWaveform,
+  //     plan: "Startup",
+  //   },
+  //   {
+  //     name: "Evil Corp.",
+  //     logo: Command,
+  //     plan: "Free",
+  //   },
+  // ],
   navMain: [
     {
-      title: "Playground",
+      title: "NBA",
       url: "#",
-      icon: SquareTerminal,
+      icon: FaBasketballBall, // Basketball icon for NBA
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Home",
+          url: "/NBA",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Scores",
+          url: "/NBA/Scores",
         },
         {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
+          title: "Schedule",
+          url: "/NBA/Schedule",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Standings",
+          url: "/NBA/Standings",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Stats",
+          url: "/NBA/Stats",
+        },
+        {
+          title: "Teams",
+          url: "/NBA/Teams",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "NFL",
       url: "#",
-      icon: BookOpen,
+      icon: FaFootballBall, // Football icon for NFL
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Home",
+          url: "/NFL",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Scores",
+          url: "/NFL/Scores",
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: "Schedule",
+          url: "/NFL/Schedule",
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: "Standings",
+          url: "/NFL/Standings",
+        },
+        {
+          title: "Stats",
+          url: "/NFL/Stats",
+        },
+        {
+          title: "Teams",
+          url: "/NFL/Teams",
         },
       ],
     },
     {
-      title: "Settings",
+      title: "Soccer",
       url: "#",
-      icon: Settings2,
+      icon: FaFutbol, // Soccer icon for Soccer league
       items: [
         {
-          title: "General",
+          title: "Home",
+          url: "/Soccer",
+        },
+        {
+          title: "Scores",
+          url: "/Soccer/Scores",
+        },
+        {
+          title: "Schedule",
+          url: "/Soccer/Schedule",
+        },
+        {
+          title: "Standings",
+          url: "/Soccer/Standings",
+        },
+        {
+          title: "Stats",
+          url: "/Soccer/Stats",
+        },
+        {
+          title: "Teams",
+          url: "/Soccer/Teams",
+        },
+      ],
+    },
+    {
+      title: "Olympics",
+      url: "#",
+      icon: FaMedal, // Medal icon for Olympics
+      items: [
+        {
+          title: "Home",
           url: "#",
         },
         {
-          title: "Team",
+          title: "Scores",
           url: "#",
         },
         {
-          title: "Billing",
+          title: "Schedule",
           url: "#",
         },
         {
-          title: "Limits",
+          title: "Standings",
+          url: "#",
+        },
+        {
+          title: "Stats",
+          url: "#",
+        },
+        {
+          title: "Teams",
           url: "#",
         },
       ],
     },
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+  // projects: [
+  //   {
+  //     name: "Design Engineering",
+  //     url: "#",
+  //     icon: Frame,
+  //   },
+  //   {
+  //     name: "Sales & Marketing",
+  //     url: "#",
+  //     icon: PieChart,
+  //   },
+  //   {
+  //     name: "Travel",
+  //     url: "#",
+  //     icon: Map,
+  //   },
+  // ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-      </SidebarHeader>
+      <SidebarHeader>{/* <TeamSwitcher teams={data.teams} /> */}</SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={data.user} />
+      </SidebarFooter>
+      <SidebarRail />
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
