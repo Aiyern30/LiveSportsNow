@@ -17,6 +17,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui";
+import { cn } from "@/lib/utils";
 
 const NBAStandings = () => {
   const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
@@ -82,13 +83,39 @@ const NBAStandings = () => {
                     height={50}
                   />
                 </div>
+
                 {/* Row 2: Team Names */}
                 <p className="text-lg font-semibold">{game.teams.home.name}</p>
                 <p className="text-lg font-semibold">{game.teams.away.name}</p>
-                {/* Row 3: Team Scores */}
-                <p className="text-2xl font-bold">{game.scores.home.total}</p>
+
+                {/* Row 3: Total Scores (Comparison Applied) */}
+                <p
+                  className={cn(
+                    "text-2xl font-bold",
+                    game.scores.home.total > game.scores.away.total &&
+                      "text-green-500",
+                    game.scores.home.total < game.scores.away.total &&
+                      "text-red-500",
+                    game.scores.home.total === game.scores.away.total &&
+                      "text-orange-500"
+                  )}
+                >
+                  {game.scores.home.total}
+                </p>
                 <div></div>
-                <p className="text-2xl font-bold">{game.scores.away.total}</p>
+                <p
+                  className={cn(
+                    "text-2xl font-bold",
+                    game.scores.away.total > game.scores.home.total &&
+                      "text-green-500",
+                    game.scores.away.total < game.scores.home.total &&
+                      "text-red-500",
+                    game.scores.away.total === game.scores.home.total &&
+                      "text-orange-500"
+                  )}
+                >
+                  {game.scores.away.total}
+                </p>
               </div>
 
               {/* Quarter Scores Table */}
@@ -107,7 +134,6 @@ const NBAStandings = () => {
                       {game.scores.home.over_time !== null && (
                         <TableHead className="text-center">OT</TableHead>
                       )}
-                      <TableHead className="text-center">Total</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -123,26 +149,31 @@ const NBAStandings = () => {
                           />
                         </div>
                       </TableCell>
-                      <TableCell className="text-center">
-                        {game.scores.home.quarter_1}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {game.scores.home.quarter_2}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {game.scores.home.quarter_3}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {game.scores.home.quarter_4}
-                      </TableCell>
-                      {game.scores.home.over_time !== null && (
-                        <TableCell className="text-center">
-                          {game.scores.home.over_time}
-                        </TableCell>
-                      )}
-                      <TableCell className="text-center font-bold">
-                        {game.scores.home.total}
-                      </TableCell>
+                      {(
+                        Object.keys(game.scores.home) as Array<
+                          keyof typeof game.scores.home
+                        >
+                      )
+                        .filter(
+                          (q) =>
+                            q !== "total" && game.scores.home[q] !== undefined
+                        )
+                        .map((q, index) => (
+                          <TableCell
+                            key={index}
+                            className={cn(
+                              "text-center",
+                              game.scores.home[q]! > game.scores.away[q]! &&
+                                "text-green-500",
+                              game.scores.home[q]! < game.scores.away[q]! &&
+                                "text-red-500",
+                              game.scores.home[q]! === game.scores.away[q]! &&
+                                "text-orange-500"
+                            )}
+                          >
+                            {game.scores.home[q]}
+                          </TableCell>
+                        ))}
                     </TableRow>
 
                     {/* Away Team Row */}
@@ -157,26 +188,31 @@ const NBAStandings = () => {
                           />
                         </div>
                       </TableCell>
-                      <TableCell className="text-center">
-                        {game.scores.away.quarter_1}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {game.scores.away.quarter_2}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {game.scores.away.quarter_3}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {game.scores.away.quarter_4}
-                      </TableCell>
-                      {game.scores.away.over_time !== null && (
-                        <TableCell className="text-center">
-                          {game.scores.away.over_time}
-                        </TableCell>
-                      )}
-                      <TableCell className="text-center font-bold">
-                        {game.scores.away.total}
-                      </TableCell>
+                      {(
+                        Object.keys(game.scores.away) as Array<
+                          keyof typeof game.scores.away
+                        >
+                      )
+                        .filter(
+                          (q) =>
+                            q !== "total" && game.scores.away[q] !== undefined
+                        )
+                        .map((q, index) => (
+                          <TableCell
+                            key={index}
+                            className={cn(
+                              "text-center",
+                              game.scores.away[q]! > game.scores.home[q]! &&
+                                "text-green-500",
+                              game.scores.away[q]! < game.scores.home[q]! &&
+                                "text-red-500",
+                              game.scores.away[q]! === game.scores.home[q]! &&
+                                "text-orange-500"
+                            )}
+                          >
+                            {game.scores.away[q]}
+                          </TableCell>
+                        ))}
                     </TableRow>
                   </TableBody>
                 </Table>
