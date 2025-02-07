@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { NBAGame } from "@/type/NBA/game";
 import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
   Card,
   CardHeader,
   CardTitle,
@@ -40,9 +46,9 @@ const NBAStandings = () => {
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
+    <div className="mx-auto p-4">
       <h1 className="text-2xl font-bold text-center mb-6">NBA Games</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {nbaGames.map((game) => (
           <Card key={game.id} className="p-4 shadow-lg">
             <CardHeader className="text-center">
@@ -57,7 +63,7 @@ const NBAStandings = () => {
             <CardContent>
               <div className="flex justify-between items-center text-center">
                 {/* Home Team */}
-                <div className="flex flex-col items-center">
+                <div className="flex-1 flex flex-col items-center min-h-[100px]">
                   <Image
                     src={game.teams.home.logo}
                     alt={game.teams.home.name}
@@ -73,7 +79,7 @@ const NBAStandings = () => {
                 <p className="text-lg font-semibold">VS</p>
 
                 {/* Away Team */}
-                <div className="flex flex-col items-center">
+                <div className="flex-1 flex flex-col items-center min-h-[100px]">
                   <Image
                     src={game.teams.away.logo}
                     alt={game.teams.away.name}
@@ -85,6 +91,97 @@ const NBAStandings = () => {
                   </p>
                   <p className="text-2xl font-bold">{game.scores.away.total}</p>
                 </div>
+              </div>
+
+              {/* Quarter Scores Table */}
+              <div className="mt-4">
+                <h3 className="font-semibold mb-2 text-center">
+                  Quarter Scores
+                </h3>
+                <Table className="w-full">
+                  <TableHeader>
+                    <TableRow className="text-center">
+                      <TableHead className="text-center">Team</TableHead>
+                      <TableHead className="text-center">Q1</TableHead>
+                      <TableHead className="text-center">Q2</TableHead>
+                      <TableHead className="text-center">Q3</TableHead>
+                      <TableHead className="text-center">Q4</TableHead>
+                      {game.scores.home.over_time !== null && (
+                        <TableHead className="text-center">OT</TableHead>
+                      )}
+                      <TableHead className="text-center">Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {/* Home Team Row */}
+                    <TableRow className="text-center">
+                      <TableCell className="text-center">
+                        <div className="flex justify-center">
+                          <Image
+                            src={game.teams.home.logo}
+                            alt={game.teams.home.name}
+                            width={25}
+                            height={25}
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {game.scores.home.quarter_1}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {game.scores.home.quarter_2}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {game.scores.home.quarter_3}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {game.scores.home.quarter_4}
+                      </TableCell>
+                      {game.scores.home.over_time !== null && (
+                        <TableCell className="text-center">
+                          {game.scores.home.over_time}
+                        </TableCell>
+                      )}
+                      <TableCell className="text-center font-bold">
+                        {game.scores.home.total}
+                      </TableCell>
+                    </TableRow>
+
+                    {/* Away Team Row */}
+                    <TableRow className="text-center">
+                      <TableCell className="text-center">
+                        <div className="flex justify-center">
+                          <Image
+                            src={game.teams.away.logo}
+                            alt={game.teams.away.name}
+                            width={25}
+                            height={25}
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {game.scores.away.quarter_1}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {game.scores.away.quarter_2}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {game.scores.away.quarter_3}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {game.scores.away.quarter_4}
+                      </TableCell>
+                      {game.scores.away.over_time !== null && (
+                        <TableCell className="text-center">
+                          {game.scores.away.over_time}
+                        </TableCell>
+                      )}
+                      <TableCell className="text-center font-bold">
+                        {game.scores.away.total}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
               </div>
             </CardContent>
 
