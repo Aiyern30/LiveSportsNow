@@ -84,11 +84,10 @@ const NBAStandings = () => {
                 </div>
                 {/* Row 2: Team Names */}
                 <p className="text-lg font-semibold">{game.teams.home.name}</p>
-                {/* "VS" is already in row 2 due to row-span-2 */}
                 <p className="text-lg font-semibold">{game.teams.away.name}</p>
                 {/* Row 3: Team Scores */}
                 <p className="text-2xl font-bold">{game.scores.home.total}</p>
-                <div></div> {/* Empty cell */}
+                <div></div>
                 <p className="text-2xl font-bold">{game.scores.away.total}</p>
               </div>
 
