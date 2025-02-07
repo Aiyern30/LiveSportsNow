@@ -61,36 +61,35 @@ const NBAStandings = () => {
             </CardHeader>
 
             <CardContent>
-              <div className="flex justify-between items-center text-center">
-                {/* Home Team */}
-                <div className="flex-1 flex flex-col items-center min-h-[100px]">
+              <div className="grid grid-rows-3 grid-cols-3 text-center gap-2 items-center">
+                {/* Row 1: Team Logos */}
+                <div className="flex justify-center">
                   <Image
                     src={game.teams.home.logo}
                     alt={game.teams.home.name}
                     width={50}
                     height={50}
                   />
-                  <p className="text-lg font-semibold">
-                    {game.teams.home.name}
-                  </p>
-                  <p className="text-2xl font-bold">{game.scores.home.total}</p>
                 </div>
-
-                <p className="text-lg font-semibold">VS</p>
-
-                {/* Away Team */}
-                <div className="flex-1 flex flex-col items-center min-h-[100px]">
+                <p className="text-lg font-semibold row-span-2 flex items-center justify-center">
+                  VS
+                </p>
+                <div className="flex justify-center">
                   <Image
                     src={game.teams.away.logo}
                     alt={game.teams.away.name}
                     width={50}
                     height={50}
                   />
-                  <p className="text-lg font-semibold">
-                    {game.teams.away.name}
-                  </p>
-                  <p className="text-2xl font-bold">{game.scores.away.total}</p>
                 </div>
+                {/* Row 2: Team Names */}
+                <p className="text-lg font-semibold">{game.teams.home.name}</p>
+                {/* "VS" is already in row 2 due to row-span-2 */}
+                <p className="text-lg font-semibold">{game.teams.away.name}</p>
+                {/* Row 3: Team Scores */}
+                <p className="text-2xl font-bold">{game.scores.home.total}</p>
+                <div></div> {/* Empty cell */}
+                <p className="text-2xl font-bold">{game.scores.away.total}</p>
               </div>
 
               {/* Quarter Scores Table */}
