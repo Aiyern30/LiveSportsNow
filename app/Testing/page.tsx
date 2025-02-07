@@ -219,7 +219,7 @@ const NBAStandings = () => {
               </div>
             </CardContent>
 
-            <CardFooter className="border-t pt-3 text-center">
+            <CardFooter className="border-t pt-3 text-center space-x-5">
               <p className="text-sm text-gray-600">
                 Venue: <span className="font-semibold">{game.venue}</span>
               </p>
