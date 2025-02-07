@@ -1,13 +1,6 @@
 "use client";
 
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@radix-ui/react-dropdown-menu";
-import {
   Folder,
   Forward,
   MoreHorizontal,
@@ -22,6 +15,11 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarMenuAction,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "./ui";
 
 export function NavProjects({
