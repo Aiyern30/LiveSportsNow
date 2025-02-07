@@ -9,7 +9,8 @@ export const fetchNBAGames = async (): Promise<NBAGame[]> => {
   // Adding league and season parameters
   const params = new URLSearchParams({
     league: "12", // NBA league ID
-    season: "2023-2024", // Correct season format
+    season: "2023-2024",
+    // date:"10/6/2023"
   });
 
   try {
@@ -30,7 +31,6 @@ export const fetchNBAGames = async (): Promise<NBAGame[]> => {
 
     console.log("Fetched NBA Games:", data.response); // Debugging
 
-    // Ensure the API response matches the NBAGame type
     return data.response as NBAGame[];
   } catch (error) {
     console.error("Failed to fetch NBA games", error);
