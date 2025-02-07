@@ -51,27 +51,27 @@ const data = {
       items: [
         {
           title: "Home",
-          url: "#",
+          url: "/NBA",
         },
         {
           title: "Scores",
-          url: "#",
+          url: "/NBA/Scores",
         },
         {
           title: "Schedule",
-          url: "#",
+          url: "/NBA/Schedule",
         },
         {
           title: "Standings",
-          url: "#",
+          url: "/NBA/Standings",
         },
         {
           title: "Stats",
-          url: "#",
+          url: "/NBA/Stats",
         },
         {
           title: "Teams",
-          url: "#",
+          url: "/NBA/Teams",
         },
       ],
     },
@@ -82,27 +82,27 @@ const data = {
       items: [
         {
           title: "Home",
-          url: "#",
+          url: "/NFL",
         },
         {
           title: "Scores",
-          url: "#",
+          url: "/NFL/Scores",
         },
         {
           title: "Schedule",
-          url: "#",
+          url: "/NFL/Schedule",
         },
         {
           title: "Standings",
-          url: "#",
+          url: "/NFL/Standings",
         },
         {
           title: "Stats",
-          url: "#",
+          url: "/NFL/Stats",
         },
         {
           title: "Teams",
-          url: "#",
+          url: "/NFL/Teams",
         },
       ],
     },
@@ -113,27 +113,27 @@ const data = {
       items: [
         {
           title: "Home",
-          url: "#",
+          url: "/Soccer",
         },
         {
           title: "Scores",
-          url: "#",
+          url: "/Soccer/Scores",
         },
         {
           title: "Schedule",
-          url: "#",
+          url: "/Soccer/Schedule",
         },
         {
           title: "Standings",
-          url: "#",
+          url: "/Soccer/Standings",
         },
         {
           title: "Stats",
-          url: "#",
+          url: "/Soccer/Stats",
         },
         {
           title: "Teams",
-          url: "#",
+          url: "/Soccer/Teams",
         },
       ],
     },
