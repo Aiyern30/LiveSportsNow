@@ -2,17 +2,11 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+  FaBasketballBall,
+  FaFootballBall,
+  FaFutbol,
+  FaMedal,
+} from "react-icons/fa";
 
 import {
   Sidebar,
@@ -22,147 +16,185 @@ import {
   SidebarRail,
 } from "./ui";
 import { NavMain } from "./nav-main";
-import { NavProjects } from "./nav-projects";
+// import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
-import { TeamSwitcher } from "./team-switcher";
+// import { TeamSwitcher } from "./team-switcher";
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "https://avatars.githubusercontent.com/u/30559529",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
+  // teams: [
+  //   {
+  //     name: "Acme Inc",
+  //     logo: GalleryVerticalEnd,
+  //     plan: "Enterprise",
+  //   },
+  //   {
+  //     name: "Acme Corp.",
+  //     logo: AudioWaveform,
+  //     plan: "Startup",
+  //   },
+  //   {
+  //     name: "Evil Corp.",
+  //     logo: Command,
+  //     plan: "Free",
+  //   },
+  // ],
   navMain: [
     {
-      title: "Playground",
+      title: "NBA",
       url: "#",
-      icon: SquareTerminal,
+      icon: FaBasketballBall, // Basketball icon for NBA
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Home",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Scores",
           url: "#",
         },
         {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
+          title: "Schedule",
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "Standings",
           url: "#",
         },
         {
-          title: "Quantum",
+          title: "Stats",
+          url: "#",
+        },
+        {
+          title: "Teams",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "NFL",
       url: "#",
-      icon: BookOpen,
+      icon: FaFootballBall, // Football icon for NFL
       items: [
         {
-          title: "Introduction",
+          title: "Home",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Scores",
           url: "#",
         },
         {
-          title: "Tutorials",
+          title: "Schedule",
           url: "#",
         },
         {
-          title: "Changelog",
+          title: "Standings",
+          url: "#",
+        },
+        {
+          title: "Stats",
+          url: "#",
+        },
+        {
+          title: "Teams",
           url: "#",
         },
       ],
     },
     {
-      title: "Settings",
+      title: "Soccer",
       url: "#",
-      icon: Settings2,
+      icon: FaFutbol, // Soccer icon for Soccer league
       items: [
         {
-          title: "General",
+          title: "Home",
           url: "#",
         },
         {
-          title: "Team",
+          title: "Scores",
           url: "#",
         },
         {
-          title: "Billing",
+          title: "Schedule",
           url: "#",
         },
         {
-          title: "Limits",
+          title: "Standings",
+          url: "#",
+        },
+        {
+          title: "Stats",
+          url: "#",
+        },
+        {
+          title: "Teams",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Olympics",
+      url: "#",
+      icon: FaMedal, // Medal icon for Olympics
+      items: [
+        {
+          title: "Home",
+          url: "#",
+        },
+        {
+          title: "Scores",
+          url: "#",
+        },
+        {
+          title: "Schedule",
+          url: "#",
+        },
+        {
+          title: "Standings",
+          url: "#",
+        },
+        {
+          title: "Stats",
+          url: "#",
+        },
+        {
+          title: "Teams",
           url: "#",
         },
       ],
     },
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+  // projects: [
+  //   {
+  //     name: "Design Engineering",
+  //     url: "#",
+  //     icon: Frame,
+  //   },
+  //   {
+  //     name: "Sales & Marketing",
+  //     url: "#",
+  //     icon: PieChart,
+  //   },
+  //   {
+  //     name: "Travel",
+  //     url: "#",
+  //     icon: Map,
+  //   },
+  // ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-      </SidebarHeader>
+      <SidebarHeader>{/* <TeamSwitcher teams={data.teams} /> */}</SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
