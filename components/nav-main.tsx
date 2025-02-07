@@ -1,10 +1,5 @@
 "use client";
 
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "@radix-ui/react-collapsible";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import {
   SidebarGroup,
@@ -15,6 +10,9 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
 } from "./ui";
 
 export function NavMain({
