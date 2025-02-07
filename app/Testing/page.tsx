@@ -2,7 +2,7 @@
 
 "use client";
 import { StandingsData } from "@/type/NBA/standing";
-import { fetchNBAGames } from "@/utils/NBA/fetchNBA";
+import { fetchNBAGames } from "@/utils/NBA/fetchNBAGames";
 import { useEffect, useState } from "react";
 
 const NBAStandings = () => {
