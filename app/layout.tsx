@@ -4,6 +4,7 @@ import "./globals.css";
 import { SidebarProvider } from "@/components/ui";
 import { AppSidebar } from "@/components/app-sidebar";
 import TopHeader from "@/components/TopHeader";
+import TopNav from "@/components/TopNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
 
           <main className="flex flex-col flex-1">
             <TopHeader />
+            <TopNav />
             <div className="flex-1 px-4">{children}</div>
           </main>
         </SidebarProvider>
