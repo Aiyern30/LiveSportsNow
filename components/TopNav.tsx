@@ -12,6 +12,8 @@ import {
   NavigationMenuViewport,
   navigationMenuTriggerStyle,
 } from "@/components/ui";
+import { teams } from "./json/page";
+import Image from "next/image";
 
 const TopNav = () => {
   return (
@@ -58,15 +60,31 @@ const TopNav = () => {
               Teams
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                {teams.map((team) => (
-                  <ListItem
-                    key={team.title}
-                    title={team.title}
-                    href={team.href}
-                  >
-                    {team.description}
-                  </ListItem>
+              <ul className="grid w-full gap-4 p-4 md:w-[500px] md:grid-cols-2 lg:w-[800px] lg:grid-cols-3 xl:w-[1000px] xl:grid-cols-3">
+                {teams.map((division) => (
+                  <div key={division.division}>
+                    <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+                      {division.division}
+                    </h2>
+                    {division.teams.map((team) => (
+                      <Link
+                        key={team.name}
+                        className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                        href={`/teams/${team.name}`}
+                      >
+                        <Image
+                          src={team.logo}
+                          alt={team.name}
+                          width={48}
+                          height={48}
+                          className="rounded-full"
+                        />
+                        <span className="text-lg font-medium text-gray-700">
+                          {team.name}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
                 ))}
               </ul>
             </NavigationMenuContent>
@@ -100,28 +118,5 @@ const ListItem = React.forwardRef<
   );
 });
 ListItem.displayName = "ListItem";
-
-const teams = [
-  {
-    title: "Golden State Warriors",
-    href: "/teams/golden-state",
-    description: "The dynasty from the Bay Area.",
-  },
-  {
-    title: "Los Angeles Lakers",
-    href: "/teams/lakers",
-    description: "The storied franchise with 17 championships.",
-  },
-  {
-    title: "Chicago Bulls",
-    href: "/teams/bulls",
-    description: "Home of the legendary Michael Jordan.",
-  },
-  {
-    title: "Boston Celtics",
-    href: "/teams/celtics",
-    description: "The most successful franchise in NBA history.",
-  },
-];
 
 export default TopNav;
