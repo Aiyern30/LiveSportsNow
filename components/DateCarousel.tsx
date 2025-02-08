@@ -26,7 +26,7 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
       if (window.innerWidth >= 1024) {
         setVisibleDays(7); // Large screens
       } else if (window.innerWidth >= 768) {
-        setVisibleDays(5); // Tablets
+        setVisibleDays(5); // Tabconsts
       } else if (window.innerWidth >= 480) {
         setVisibleDays(3); // Small screens
       } else {
@@ -47,8 +47,52 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
   // Handle date selection
   const handleDateSelect = (date: Date) => {
     const formattedDate = format(date, "yyyy-MM-dd");
-    if (disabledDates.includes(formattedDate)) {
+    if (!disabledDates.includes(formattedDate)) {
       setSelectedDate(date); // Only select if the date is **enabled**
+    }
+  };
+
+  // Handle moving to the next set of dates
+  const handleNext = () => {
+    const newStartDate = addDays(selectedDate, visibleDays); // Move by visibleDays
+
+    // Generate new set of dates
+    const nextWeekDates = Array.from({ length: visibleDays }, (_, i) =>
+      addDays(newStartDate, i)
+    );
+
+    // Check if the selected date is disabled in the new week
+    const newSelectedDate = nextWeekDates.find(
+      (date) => !disabledDates.includes(format(date, "yyyy-MM-dd"))
+    );
+
+    if (newSelectedDate) {
+      setSelectedDate(newSelectedDate); // If found, set as new selected date
+    } else {
+      // If no enabled date is found, keep the previous selected date
+      setSelectedDate(selectedDate);
+    }
+  };
+
+  // Handle moving to the previous set of dates
+  const handlePrev = () => {
+    const newStartDate = addDays(selectedDate, -visibleDays); // Move by -visibleDays
+
+    // Generate new set of dates
+    const prevWeekDates = Array.from({ length: visibleDays }, (_, i) =>
+      addDays(newStartDate, i)
+    );
+
+    // Check if the selected date is disabled in the new week
+    const newSelectedDate = prevWeekDates.find(
+      (date) => !disabledDates.includes(format(date, "yyyy-MM-dd"))
+    );
+
+    if (newSelectedDate) {
+      setSelectedDate(newSelectedDate); // If found, set as new selected date
+    } else {
+      // If no enabled date is found, keep the previous selected date
+      setSelectedDate(selectedDate);
     }
   };
 
@@ -57,7 +101,7 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
       {/* Left Arrow - Previous Week */}
       <button
         className="p-2 rounded-full hover:bg-gray-200 transition"
-        onClick={() => setSelectedDate(addDays(selectedDate, -visibleDays))}
+        onClick={handlePrev}
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
@@ -67,21 +111,21 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
         <div className="flex justify-center items-center space-x-2 overflow-x-auto scrollbar-hide w-full">
           {weekDates.map((date) => {
             const formattedDate = format(date, "yyyy-MM-dd");
-            const isDisabled = !disabledDates.includes(formattedDate); // Invert logic to disable dates not in disabledDates
+            const isDisabled = !disabledDates.includes(formattedDate); // Correct logic: If it's in the disabledDates, it's disabled.
 
             return (
               <button
                 key={date.toString()}
                 className={`w-[60px] sm:w-[70px] md:w-[80px] lg:w-[100px] min-h-[80px] px-4 py-2 rounded-lg transition flex flex-col items-center ${
                   isDisabled
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed" // Disabled button styles
                     : format(date, "yyyy-MM-dd") ===
                       format(selectedDate, "yyyy-MM-dd")
-                    ? "bg-blue-500 text-white font-semibold"
-                    : "bg-gray-100 text-gray-700"
+                    ? "bg-blue-500 text-white font-semibold" // Selected date styles
+                    : "bg-gray-100 text-gray-700" // Regular date styles
                 }`}
                 onClick={() => handleDateSelect(date)}
-                disabled={isDisabled} // Disable the button if the date is not in disabledDates
+                disabled={isDisabled} // Disable the button if the date is in disabledDates
               >
                 <span className="text-sm">{format(date, "EEE")}</span>
                 <span className="text-lg">{format(date, "MMM d")}</span>
@@ -94,7 +138,7 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
       {/* Right Arrow - Next Week */}
       <button
         className="p-2 rounded-full hover:bg-gray-200 transition"
-        onClick={() => setSelectedDate(addDays(selectedDate, visibleDays))}
+        onClick={handleNext}
       >
         <ChevronRight className="w-5 h-5" />
       </button>
