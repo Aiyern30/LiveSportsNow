@@ -18,11 +18,14 @@ import {
   CardFooter,
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import DateCarousel from "@/components/DateCarousel";
+import { format } from "date-fns";
 
 const NBAStandings = () => {
   const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Manage selected date
 
   useEffect(() => {
     const getNBAGames = async () => {
@@ -46,11 +49,24 @@ const NBAStandings = () => {
   if (loading) return <div className="text-center text-lg">Loading...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
+  // 🔹 FILTER NBA GAMES BASED ON SELECTED DATE
+  const filteredGames = nbaGames.filter((game) => {
+    const gameDate = format(new Date(game.date), "yyyy-MM-dd");
+    const selectedDateFormatted = format(selectedDate, "yyyy-MM-dd");
+    console.log(gameDate, selectedDateFormatted); // Check the comparison
+    return gameDate === selectedDateFormatted;
+  });
+
   return (
     <div className="mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center mb-6">NBA Games</h1>
+      <DateCarousel
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
+
+      <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {nbaGames.map((game) => (
+        {filteredGames.map((game) => (
           <Card key={game.id} className="p-4 shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-lg font-bold">

@@ -1,13 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, addDays, subDays, startOfWeek } from "date-fns";
+import { format, addDays, startOfWeek } from "date-fns";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 
-const DateCarousel = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+interface DateCarouselProps {
+  selectedDate: Date;
+  setSelectedDate: (date: Date) => void;
+}
+
+const DateCarousel: React.FC<DateCarouselProps> = ({
+  selectedDate,
+  setSelectedDate,
+}) => {
   const [visibleDays, setVisibleDays] = useState(7); // Default: Show 7 dates
 
   // Get the start of the week (Monday)
@@ -42,7 +49,7 @@ const DateCarousel = () => {
       {/* Left Arrow - Previous Week */}
       <button
         className="p-2 rounded-full hover:bg-gray-200 transition"
-        onClick={() => setSelectedDate(subDays(selectedDate, visibleDays))}
+        onClick={() => setSelectedDate(addDays(selectedDate, -visibleDays))}
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
