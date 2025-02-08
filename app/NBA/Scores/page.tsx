@@ -40,6 +40,12 @@ const NBAStandings = () => {
         );
         const uniqueAvailableDates = Array.from(new Set(availableDates)); // Remove duplicates
         setDisabledDates(uniqueAvailableDates);
+
+        // Set the default selected date to the latest available date
+        const latestDate = uniqueAvailableDates.sort().pop();
+        if (latestDate) {
+          setSelectedDate(new Date(latestDate)); // Set to latest available date
+        }
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(`Failed to fetch NBA games: ${error.message}`);

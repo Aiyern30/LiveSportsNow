@@ -13,7 +13,7 @@ interface DateCarouselProps {
 const DateCarousel: React.FC<DateCarouselProps> = ({
   selectedDate,
   setSelectedDate,
-  disabledDates, // Accept disabled dates prop
+  disabledDates,
 }) => {
   const [visibleDays, setVisibleDays] = useState(7); // Default: Show 7 dates
 
@@ -26,7 +26,7 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
       if (window.innerWidth >= 1024) {
         setVisibleDays(7); // Large screens
       } else if (window.innerWidth >= 768) {
-        setVisibleDays(5); // Tabconsts
+        setVisibleDays(5); // Tablets
       } else if (window.innerWidth >= 480) {
         setVisibleDays(3); // Small screens
       } else {
@@ -52,48 +52,37 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
     }
   };
 
+  // Function to get nearest enabled date from the current selection
+  const getNearestEnabledDate = (direction: "next" | "prev") => {
+    const formattedSelectedDate = format(selectedDate, "yyyy-MM-dd");
+
+    // Get all the available dates sorted
+    const sortedAvailableDates = disabledDates.sort();
+    let nearestDate = null;
+
+    if (direction === "next") {
+      nearestDate = sortedAvailableDates.find(
+        (date) => date > formattedSelectedDate
+      );
+    } else if (direction === "prev") {
+      nearestDate = [...sortedAvailableDates]
+        .reverse()
+        .find((date) => date < formattedSelectedDate);
+    }
+
+    return nearestDate ? new Date(nearestDate) : selectedDate;
+  };
+
   // Handle moving to the next set of dates
   const handleNext = () => {
-    const newStartDate = addDays(selectedDate, visibleDays); // Move by visibleDays
-
-    // Generate new set of dates
-    const nextWeekDates = Array.from({ length: visibleDays }, (_, i) =>
-      addDays(newStartDate, i)
-    );
-
-    // Check if the selected date is disabled in the new week
-    const newSelectedDate = nextWeekDates.find(
-      (date) => !disabledDates.includes(format(date, "yyyy-MM-dd"))
-    );
-
-    if (newSelectedDate) {
-      setSelectedDate(newSelectedDate); // If found, set as new selected date
-    } else {
-      // If no enabled date is found, keep the previous selected date
-      setSelectedDate(selectedDate);
-    }
+    const newSelectedDate = getNearestEnabledDate("next");
+    setSelectedDate(newSelectedDate);
   };
 
   // Handle moving to the previous set of dates
   const handlePrev = () => {
-    const newStartDate = addDays(selectedDate, -visibleDays); // Move by -visibleDays
-
-    // Generate new set of dates
-    const prevWeekDates = Array.from({ length: visibleDays }, (_, i) =>
-      addDays(newStartDate, i)
-    );
-
-    // Check if the selected date is disabled in the new week
-    const newSelectedDate = prevWeekDates.find(
-      (date) => !disabledDates.includes(format(date, "yyyy-MM-dd"))
-    );
-
-    if (newSelectedDate) {
-      setSelectedDate(newSelectedDate); // If found, set as new selected date
-    } else {
-      // If no enabled date is found, keep the previous selected date
-      setSelectedDate(selectedDate);
-    }
+    const newSelectedDate = getNearestEnabledDate("prev");
+    setSelectedDate(newSelectedDate);
   };
 
   return (
