@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,11 +7,13 @@ import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 interface DateCarouselProps {
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
+  disabledDates: string[]; // New prop to receive disabled dates
 }
 
 const DateCarousel: React.FC<DateCarouselProps> = ({
   selectedDate,
   setSelectedDate,
+  disabledDates, // Accept disabled dates prop
 }) => {
   const [visibleDays, setVisibleDays] = useState(7); // Default: Show 7 dates
 
@@ -44,6 +44,14 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
     addDays(startOfCurrentWeek, i)
   );
 
+  // Handle date selection
+  const handleDateSelect = (date: Date) => {
+    const formattedDate = format(date, "yyyy-MM-dd");
+    if (disabledDates.includes(formattedDate)) {
+      setSelectedDate(date); // Only select if the date is **enabled**
+    }
+  };
+
   return (
     <div className="flex items-center space-x-2 p-4 bg-white shadow-md rounded-lg w-full">
       {/* Left Arrow - Previous Week */}
@@ -57,21 +65,29 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
       {/* Scrollable Week Carousel */}
       <div className="flex-1 overflow-hidden">
         <div className="flex justify-center items-center space-x-2 overflow-x-auto scrollbar-hide w-full">
-          {weekDates.map((date) => (
-            <button
-              key={date.toString()}
-              className={`w-[60px] sm:w-[70px] md:w-[80px] lg:w-[100px] min-h-[80px] px-4 py-2 rounded-lg transition flex flex-col items-center ${
-                format(date, "yyyy-MM-dd") ===
-                format(selectedDate, "yyyy-MM-dd")
-                  ? "bg-blue-500 text-white font-semibold"
-                  : "bg-gray-100 text-gray-700"
-              }`}
-              onClick={() => setSelectedDate(date)}
-            >
-              <span className="text-sm">{format(date, "EEE")}</span>
-              <span className="text-lg">{format(date, "MMM d")}</span>
-            </button>
-          ))}
+          {weekDates.map((date) => {
+            const formattedDate = format(date, "yyyy-MM-dd");
+            const isDisabled = !disabledDates.includes(formattedDate); // Invert logic to disable dates not in disabledDates
+
+            return (
+              <button
+                key={date.toString()}
+                className={`w-[60px] sm:w-[70px] md:w-[80px] lg:w-[100px] min-h-[80px] px-4 py-2 rounded-lg transition flex flex-col items-center ${
+                  isDisabled
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : format(date, "yyyy-MM-dd") ===
+                      format(selectedDate, "yyyy-MM-dd")
+                    ? "bg-blue-500 text-white font-semibold"
+                    : "bg-gray-100 text-gray-700"
+                }`}
+                onClick={() => handleDateSelect(date)}
+                disabled={isDisabled} // Disable the button if the date is not in disabledDates
+              >
+                <span className="text-sm">{format(date, "EEE")}</span>
+                <span className="text-lg">{format(date, "MMM d")}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

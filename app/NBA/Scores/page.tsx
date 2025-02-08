@@ -26,12 +26,20 @@ const NBAStandings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState(new Date()); // Manage selected date
+  const [disabledDates, setDisabledDates] = useState<string[]>([]); // Store disabled dates
 
   useEffect(() => {
     const getNBAGames = async () => {
       try {
         const data = await fetchNBAGames();
         setNbaGames(data);
+
+        // Extract available dates from fetched games
+        const availableDates = data.map((game) =>
+          format(new Date(game.date), "yyyy-MM-dd")
+        );
+        const uniqueAvailableDates = Array.from(new Set(availableDates)); // Remove duplicates
+        setDisabledDates(uniqueAvailableDates);
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(`Failed to fetch NBA games: ${error.message}`);
@@ -50,18 +58,18 @@ const NBAStandings = () => {
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   // 🔹 FILTER NBA GAMES BASED ON SELECTED DATE
-  const filteredGames = nbaGames.filter((game) => {
-    const gameDate = format(new Date(game.date), "yyyy-MM-dd");
-    const selectedDateFormatted = format(selectedDate, "yyyy-MM-dd");
-    console.log(gameDate, selectedDateFormatted); // Check the comparison
-    return gameDate === selectedDateFormatted;
-  });
+  const filteredGames = nbaGames.filter(
+    (game) =>
+      format(new Date(game.date), "yyyy-MM-dd") ===
+      format(selectedDate, "yyyy-MM-dd")
+  );
 
   return (
     <div className="mx-auto p-4">
       <DateCarousel
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
+        disabledDates={disabledDates}
       />
 
       <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>
