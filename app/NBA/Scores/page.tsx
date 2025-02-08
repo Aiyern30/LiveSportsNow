@@ -23,10 +23,11 @@ import { format } from "date-fns";
 
 const NBAStandings = () => {
   const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
+  console.log("nbaGames", nbaGames);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState(new Date()); // Manage selected date
-  const [disabledDates, setDisabledDates] = useState<string[]>([]); // Store disabled dates
+  const [enabledDates, setEnabledDates] = useState<string[]>([]); // Store enabled dates
 
   useEffect(() => {
     const getNBAGames = async () => {
@@ -39,7 +40,7 @@ const NBAStandings = () => {
           format(new Date(game.date), "yyyy-MM-dd")
         );
         const uniqueAvailableDates = Array.from(new Set(availableDates)); // Remove duplicates
-        setDisabledDates(uniqueAvailableDates);
+        setEnabledDates(uniqueAvailableDates);
 
         // Set the default selected date to the latest available date
         const latestDate = uniqueAvailableDates.sort().pop();
@@ -75,7 +76,7 @@ const NBAStandings = () => {
       <DateCarousel
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
-        disabledDates={disabledDates}
+        enabledDates={enabledDates} // Pass enabledDates instead of disabledDates
       />
 
       <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>

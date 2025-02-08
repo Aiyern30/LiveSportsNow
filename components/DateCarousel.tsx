@@ -7,13 +7,13 @@ import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 interface DateCarouselProps {
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
-  disabledDates: string[]; // New prop to receive disabled dates
+  enabledDates: string[]; // List of enabled dates (from nbaGames)
 }
 
 const DateCarousel: React.FC<DateCarouselProps> = ({
   selectedDate,
   setSelectedDate,
-  disabledDates,
+  enabledDates,
 }) => {
   const [visibleDays, setVisibleDays] = useState(7); // Default: Show 7 dates
 
@@ -44,33 +44,50 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
     addDays(startOfCurrentWeek, i)
   );
 
+  // Set selected date to the latest enabled date when enabledDates changes
+  useEffect(() => {
+    if (enabledDates.length > 0) {
+      // Convert string dates to Date objects and sort them
+      const sortedDates = enabledDates
+        .map((date) => new Date(date)) // Convert strings to Date objects
+        .sort((a, b) => b.getTime() - a.getTime()); // Sort by date descending
+
+      const latestEnabledDate = sortedDates[0]; // Get the latest enabled date
+      setSelectedDate(latestEnabledDate); // Set the latest enabled date
+    }
+  }, [enabledDates, setSelectedDate]);
+
   // Handle date selection
   const handleDateSelect = (date: Date) => {
     const formattedDate = format(date, "yyyy-MM-dd");
-    if (!disabledDates.includes(formattedDate)) {
-      setSelectedDate(date); // Only select if the date is **enabled**
+    if (enabledDates.includes(formattedDate)) {
+      setSelectedDate(date); // Only select if it's an enabled date
     }
   };
 
-  // Function to get nearest enabled date from the current selection
+  // Function to get the nearest enabled date from the current selection
   const getNearestEnabledDate = (direction: "next" | "prev") => {
     const formattedSelectedDate = format(selectedDate, "yyyy-MM-dd");
 
-    // Get all the available dates sorted
-    const sortedAvailableDates = disabledDates.sort();
+    // Convert string dates to Date objects and sort them
+    const sortedAvailableDates = enabledDates
+      .map((date) => new Date(date))
+      .sort((a, b) => a.getTime() - b.getTime()); // Sort by date ascending
+
     let nearestDate = null;
 
     if (direction === "next") {
       nearestDate = sortedAvailableDates.find(
-        (date) => date > formattedSelectedDate
+        (date) => date > new Date(formattedSelectedDate)
       );
     } else if (direction === "prev") {
       nearestDate = [...sortedAvailableDates]
         .reverse()
-        .find((date) => date < formattedSelectedDate);
+        .find((date) => date < new Date(formattedSelectedDate));
     }
 
-    return nearestDate ? new Date(nearestDate) : selectedDate;
+    // Return nearest date or default to the current selected date if none found
+    return nearestDate ? nearestDate : selectedDate;
   };
 
   // Handle moving to the next set of dates
@@ -100,21 +117,21 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
         <div className="flex justify-center items-center space-x-2 overflow-x-auto scrollbar-hide w-full">
           {weekDates.map((date) => {
             const formattedDate = format(date, "yyyy-MM-dd");
-            const isDisabled = !disabledDates.includes(formattedDate); // Correct logic: If it's in the disabledDates, it's disabled.
+            const isEnabled = enabledDates.includes(formattedDate); // Check if the date is enabled
 
             return (
               <button
                 key={date.toString()}
                 className={`w-[60px] sm:w-[70px] md:w-[80px] lg:w-[100px] min-h-[80px] px-4 py-2 rounded-lg transition flex flex-col items-center ${
-                  isDisabled
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed" // Disabled button styles
-                    : format(date, "yyyy-MM-dd") ===
+                  isEnabled
+                    ? format(date, "yyyy-MM-dd") ===
                       format(selectedDate, "yyyy-MM-dd")
-                    ? "bg-blue-500 text-white font-semibold" // Selected date styles
-                    : "bg-gray-100 text-gray-700" // Regular date styles
+                      ? "bg-blue-500 text-white font-semibold" // Selected date styles
+                      : "bg-gray-100 text-gray-700" // Regular enabled date styles
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed" // Disabled date styles
                 }`}
                 onClick={() => handleDateSelect(date)}
-                disabled={isDisabled} // Disable the button if the date is in disabledDates
+                disabled={!isEnabled} // Disable the button if the date is not in enabledDates
               >
                 <span className="text-sm">{format(date, "EEE")}</span>
                 <span className="text-lg">{format(date, "MMM d")}</span>
