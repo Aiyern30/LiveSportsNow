@@ -79,7 +79,12 @@ const NBAStandings = () => {
   return (
     <div className="mx-auto p-4">
       {isMobile ? (
-        <DatePickerDemo />
+        <div className="flex justify-center">
+          <DatePickerDemo
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
+        </div>
       ) : (
         <DateCarousel
           selectedDate={selectedDate}
