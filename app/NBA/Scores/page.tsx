@@ -40,6 +40,7 @@ const NBAStandings = () => {
     localStorage.setItem("viewPreference", newView);
   };
   const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
+  console.log("nbaGames", nbaGames);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState(new Date());
