@@ -1,5 +1,5 @@
 "use client";
-
+import { useDeviceType } from "@/lib/useDevicesType";
 import { fetchNBAGames } from "@/utils/NBA/fetchNBAGames";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -18,17 +18,41 @@ import {
   CardFooter,
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import DateCarousel from "@/components/DateCarousel";
+import { format } from "date-fns";
+import { DatePickerDemo } from "@/components/DatePickerDemo";
 
 const NBAStandings = () => {
+  const { isMobile } = useDeviceType();
+
   const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
+  console.log("nbaGames", nbaGames);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [enabledDates, setEnabledDates] = useState<string[]>([]);
 
   useEffect(() => {
     const getNBAGames = async () => {
       try {
         const data = await fetchNBAGames();
         setNbaGames(data);
+
+        // Extract available dates from fetched games
+        const availableDates = data.map((game) =>
+          format(new Date(game.date), "yyyy-MM-dd")
+        );
+        const uniqueAvailableDates = Array.from(new Set(availableDates));
+        setEnabledDates(uniqueAvailableDates);
+
+        const latestDate = uniqueAvailableDates
+          .map((date) => new Date(date))
+          .sort((a, b) => b.getTime() - a.getTime())
+          .shift();
+
+        if (latestDate) {
+          setSelectedDate(latestDate);
+        }
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(`Failed to fetch NBA games: ${error.message}`);
@@ -46,11 +70,31 @@ const NBAStandings = () => {
   if (loading) return <div className="text-center text-lg">Loading...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
+  const filteredGames = nbaGames.filter(
+    (game) =>
+      format(new Date(game.date), "yyyy-MM-dd") ===
+      format(selectedDate, "yyyy-MM-dd")
+  );
+
   return (
     <div className="mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center mb-6">NBA Games</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {nbaGames.map((game) => (
+      {isMobile ? (
+        <div className="flex justify-center items-center h-20">
+          <DatePickerDemo
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
+        </div>
+      ) : (
+        <DateCarousel
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          enabledDates={enabledDates}
+        />
+      )}
+      <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {filteredGames.map((game) => (
           <Card key={game.id} className="p-4 shadow-lg">
             <CardHeader className="text-center">
               <CardTitle className="text-lg font-bold">
@@ -88,7 +132,6 @@ const NBAStandings = () => {
                 <p className="text-lg font-semibold">{game.teams.home.name}</p>
                 <p className="text-lg font-semibold">{game.teams.away.name}</p>
 
-                {/* Row 3: Total Scores (Comparison Applied) */}
                 <p
                   className={cn(
                     "text-2xl font-bold",

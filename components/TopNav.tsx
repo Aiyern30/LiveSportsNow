@@ -105,7 +105,7 @@ const TopNav = () => {
                   isActive("/NBA/Teams") ? "visible" : "invisible"
                 }`}
               ></div>
-              <NavigationMenuContent>
+              <NavigationMenuContent className="max-h-96 overflow-y-auto">
                 <ul className="grid w-full gap-4 p-4 md:w-[500px] md:grid-cols-2 lg:w-[800px] lg:grid-cols-3 xl:w-[1000px] xl:grid-cols-3">
                   {teams.map((division) => (
                     <div key={division.division}>
