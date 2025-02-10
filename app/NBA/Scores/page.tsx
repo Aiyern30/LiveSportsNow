@@ -28,8 +28,16 @@ const NBAStandings = () => {
   const { isMobile } = useDeviceType();
   const [view, setView] = useState("list");
 
+  useEffect(() => {
+    const savedView = localStorage.getItem("viewPreference");
+    if (savedView) {
+      setView(savedView);
+    }
+  }, []);
+
   const handleViewChange = (newView: string) => {
     setView(newView);
+    localStorage.setItem("viewPreference", newView);
   };
   const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,7 +97,10 @@ const NBAStandings = () => {
             enabledDates={enabledDates}
           />
         )}
-        <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>
+        <h1 className="text-2xl font-bold my-6 flex justify-between items-center w-full">
+          <div className="mx-auto">NBA Games</div>
+          <ViewSelector onViewChange={handleViewChange} />
+        </h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {/* Skeleton Cards */}
           {[...Array(6)].map((_, index) => (
