@@ -1,5 +1,5 @@
 "use client";
-
+import { useDeviceType } from "@/lib/useDevicesType";
 import { fetchNBAGames } from "@/utils/NBA/fetchNBAGames";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -20,8 +20,11 @@ import {
 import { cn } from "@/lib/utils";
 import DateCarousel from "@/components/DateCarousel";
 import { format } from "date-fns";
+import { DatePickerDemo } from "@/components/DatePickerDemo";
 
 const NBAStandings = () => {
+  const { isMobile } = useDeviceType();
+
   const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
   console.log("nbaGames", nbaGames);
   const [loading, setLoading] = useState(true);
@@ -75,12 +78,15 @@ const NBAStandings = () => {
 
   return (
     <div className="mx-auto p-4">
-      <DateCarousel
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        enabledDates={enabledDates}
-      />
-
+      {isMobile ? (
+        <DatePickerDemo />
+      ) : (
+        <DateCarousel
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          enabledDates={enabledDates}
+        />
+      )}
       <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredGames.map((game) => (
