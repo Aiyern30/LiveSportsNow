@@ -16,17 +16,22 @@ import {
   CardTitle,
   CardContent,
   CardFooter,
+  Skeleton,
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import DateCarousel from "@/components/DateCarousel";
 import { format } from "date-fns";
 import { DatePickerDemo } from "@/components/DatePickerDemo";
+import ViewSelector from "@/components/ViewSelector";
 
 const NBAStandings = () => {
   const { isMobile } = useDeviceType();
+  const [view, setView] = useState("list");
 
+  const handleViewChange = (newView: string) => {
+    setView(newView);
+  };
   const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
-  console.log("nbaGames", nbaGames);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -67,7 +72,51 @@ const NBAStandings = () => {
     getNBAGames();
   }, []);
 
-  if (loading) return <div className="text-center text-lg">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="mx-auto p-4">
+        {isMobile ? (
+          <div className="flex justify-center items-center h-20">
+            <DatePickerDemo
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          </div>
+        ) : (
+          <DateCarousel
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            enabledDates={enabledDates}
+          />
+        )}
+        <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {/* Skeleton Cards */}
+          {[...Array(6)].map((_, index) => (
+            <Card key={index} className="p-4 shadow-lg">
+              <CardHeader className="text-center">
+                <Skeleton className="h-6 w-3/4 mx-auto" />
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-rows-3 grid-cols-3 text-center gap-2 items-center">
+                  <Skeleton className="h-12 w-12 mx-auto" />
+                  <Skeleton className="h-4 w-1/4 mx-auto" />
+                  <Skeleton className="h-12 w-12 mx-auto" />
+                  <Skeleton className="h-6 w-3/4 mx-auto" />
+                  <Skeleton className="h-6 w-3/4 mx-auto" />
+                  <Skeleton className="h-6 w-1/2 mx-auto" />
+                  <Skeleton className="h-6 w-1/2 mx-auto" />
+                </div>
+                <Skeleton className="h-8 mt-4 w-1/2 mx-auto" />
+                <Skeleton className="h-4 w-1/2 mx-auto mt-2" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   const filteredGames = nbaGames.filter(
@@ -92,193 +141,201 @@ const NBAStandings = () => {
           enabledDates={enabledDates}
         />
       )}
-      <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredGames.map((game) => (
-          <Card key={game.id} className="p-4 shadow-lg">
-            <CardHeader className="text-center">
-              <CardTitle className="text-lg font-bold">
-                {game.league.name} - {game.league.season}
-              </CardTitle>
-              <p className="text-sm text-gray-500">
-                {new Date(game.date).toLocaleString()}
-              </p>
-            </CardHeader>
+      <h1 className="text-2xl font-bold my-6 flex justify-between items-center w-full">
+        <div className="mx-auto">NBA Games</div>
+        <ViewSelector onViewChange={handleViewChange} />
+      </h1>
+      {view === "grid" && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredGames.map((game) => (
+            <Card key={game.id} className="p-4 shadow-lg">
+              <CardHeader className="text-center">
+                <CardTitle className="text-lg font-bold">
+                  {game.league.name} - {game.league.season}
+                </CardTitle>
+                <p className="text-sm text-gray-500">
+                  {new Date(game.date).toLocaleString()}
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-rows-3 grid-cols-3 text-center gap-2 items-center">
+                  {/* Row 1: Team Logos */}
+                  <div className="flex justify-center">
+                    <Image
+                      src={game.teams.home.logo}
+                      alt={game.teams.home.name}
+                      width={50}
+                      height={50}
+                    />
+                  </div>
+                  <p className="text-lg font-semibold row-span-2 flex items-center justify-center">
+                    VS
+                  </p>
+                  <div className="flex justify-center">
+                    <Image
+                      src={game.teams.away.logo}
+                      alt={game.teams.away.name}
+                      width={50}
+                      height={50}
+                    />
+                  </div>
 
-            <CardContent>
-              <div className="grid grid-rows-3 grid-cols-3 text-center gap-2 items-center">
-                {/* Row 1: Team Logos */}
-                <div className="flex justify-center">
-                  <Image
-                    src={game.teams.home.logo}
-                    alt={game.teams.home.name}
-                    width={50}
-                    height={50}
-                  />
+                  {/* Row 2: Team Names */}
+                  <p className="text-lg font-semibold">
+                    {game.teams.home.name}
+                  </p>
+                  <p className="text-lg font-semibold">
+                    {game.teams.away.name}
+                  </p>
+
+                  <p
+                    className={cn(
+                      "text-2xl font-bold",
+                      game.scores.home.total > game.scores.away.total &&
+                        "text-green-500",
+                      game.scores.home.total < game.scores.away.total &&
+                        "text-red-500",
+                      game.scores.home.total === game.scores.away.total &&
+                        "text-orange-500"
+                    )}
+                  >
+                    {game.scores.home.total}
+                  </p>
+                  <div></div>
+                  <p
+                    className={cn(
+                      "text-2xl font-bold",
+                      game.scores.away.total > game.scores.home.total &&
+                        "text-green-500",
+                      game.scores.away.total < game.scores.home.total &&
+                        "text-red-500",
+                      game.scores.away.total === game.scores.home.total &&
+                        "text-orange-500"
+                    )}
+                  >
+                    {game.scores.away.total}
+                  </p>
                 </div>
-                <p className="text-lg font-semibold row-span-2 flex items-center justify-center">
-                  VS
-                </p>
-                <div className="flex justify-center">
-                  <Image
-                    src={game.teams.away.logo}
-                    alt={game.teams.away.name}
-                    width={50}
-                    height={50}
-                  />
+
+                {/* Quarter Scores Table */}
+                <div className="mt-4">
+                  <h3 className="font-semibold mb-2 text-center">
+                    Quarter Scores
+                  </h3>
+                  <Table className="w-full">
+                    <TableHeader>
+                      <TableRow className="text-center">
+                        <TableHead className="text-center">Team</TableHead>
+                        <TableHead className="text-center">Q1</TableHead>
+                        <TableHead className="text-center">Q2</TableHead>
+                        <TableHead className="text-center">Q3</TableHead>
+                        <TableHead className="text-center">Q4</TableHead>
+                        {game.scores.home.over_time !== null && (
+                          <TableHead className="text-center">OT</TableHead>
+                        )}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {/* Home Team Row */}
+                      <TableRow className="text-center">
+                        <TableCell className="text-center">
+                          <div className="flex justify-center">
+                            <Image
+                              src={game.teams.home.logo}
+                              alt={game.teams.home.name}
+                              width={25}
+                              height={25}
+                            />
+                          </div>
+                        </TableCell>
+                        {(
+                          Object.keys(game.scores.home) as Array<
+                            keyof typeof game.scores.home
+                          >
+                        )
+                          .filter(
+                            (q) =>
+                              q !== "total" && game.scores.home[q] !== undefined
+                          )
+                          .map((q, index) => (
+                            <TableCell
+                              key={index}
+                              className={cn(
+                                "text-center",
+                                game.scores.home[q]! > game.scores.away[q]! &&
+                                  "text-green-500",
+                                game.scores.home[q]! < game.scores.away[q]! &&
+                                  "text-red-500",
+                                game.scores.home[q]! === game.scores.away[q]! &&
+                                  "text-orange-500"
+                              )}
+                            >
+                              {game.scores.home[q]}
+                            </TableCell>
+                          ))}
+                      </TableRow>
+
+                      {/* Away Team Row */}
+                      <TableRow className="text-center">
+                        <TableCell className="text-center">
+                          <div className="flex justify-center">
+                            <Image
+                              src={game.teams.away.logo}
+                              alt={game.teams.away.name}
+                              width={25}
+                              height={25}
+                            />
+                          </div>
+                        </TableCell>
+                        {(
+                          Object.keys(game.scores.away) as Array<
+                            keyof typeof game.scores.away
+                          >
+                        )
+                          .filter(
+                            (q) =>
+                              q !== "total" && game.scores.away[q] !== undefined
+                          )
+                          .map((q, index) => (
+                            <TableCell
+                              key={index}
+                              className={cn(
+                                "text-center",
+                                game.scores.away[q]! > game.scores.home[q]! &&
+                                  "text-green-500",
+                                game.scores.away[q]! < game.scores.home[q]! &&
+                                  "text-red-500",
+                                game.scores.away[q]! === game.scores.home[q]! &&
+                                  "text-orange-500"
+                              )}
+                            >
+                              {game.scores.away[q]}
+                            </TableCell>
+                          ))}
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
+              </CardContent>
 
-                {/* Row 2: Team Names */}
-                <p className="text-lg font-semibold">{game.teams.home.name}</p>
-                <p className="text-lg font-semibold">{game.teams.away.name}</p>
-
-                <p
-                  className={cn(
-                    "text-2xl font-bold",
-                    game.scores.home.total > game.scores.away.total &&
-                      "text-green-500",
-                    game.scores.home.total < game.scores.away.total &&
-                      "text-red-500",
-                    game.scores.home.total === game.scores.away.total &&
-                      "text-orange-500"
-                  )}
-                >
-                  {game.scores.home.total}
+              <CardFooter className="border-t pt-3 text-center space-x-5">
+                <p className="text-sm text-gray-600">
+                  Venue: <span className="font-semibold">{game.venue}</span>
                 </p>
-                <div></div>
-                <p
-                  className={cn(
-                    "text-2xl font-bold",
-                    game.scores.away.total > game.scores.home.total &&
-                      "text-green-500",
-                    game.scores.away.total < game.scores.home.total &&
-                      "text-red-500",
-                    game.scores.away.total === game.scores.home.total &&
-                      "text-orange-500"
-                  )}
-                >
-                  {game.scores.away.total}
+                <p className="text-sm text-gray-600 flex items-center justify-center gap-2">
+                  <Image
+                    src={game.country.flag}
+                    alt={game.country.name}
+                    width={20}
+                    height={15}
+                  />
+                  {game.country.name}
                 </p>
-              </div>
-
-              {/* Quarter Scores Table */}
-              <div className="mt-4">
-                <h3 className="font-semibold mb-2 text-center">
-                  Quarter Scores
-                </h3>
-                <Table className="w-full">
-                  <TableHeader>
-                    <TableRow className="text-center">
-                      <TableHead className="text-center">Team</TableHead>
-                      <TableHead className="text-center">Q1</TableHead>
-                      <TableHead className="text-center">Q2</TableHead>
-                      <TableHead className="text-center">Q3</TableHead>
-                      <TableHead className="text-center">Q4</TableHead>
-                      {game.scores.home.over_time !== null && (
-                        <TableHead className="text-center">OT</TableHead>
-                      )}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {/* Home Team Row */}
-                    <TableRow className="text-center">
-                      <TableCell className="text-center">
-                        <div className="flex justify-center">
-                          <Image
-                            src={game.teams.home.logo}
-                            alt={game.teams.home.name}
-                            width={25}
-                            height={25}
-                          />
-                        </div>
-                      </TableCell>
-                      {(
-                        Object.keys(game.scores.home) as Array<
-                          keyof typeof game.scores.home
-                        >
-                      )
-                        .filter(
-                          (q) =>
-                            q !== "total" && game.scores.home[q] !== undefined
-                        )
-                        .map((q, index) => (
-                          <TableCell
-                            key={index}
-                            className={cn(
-                              "text-center",
-                              game.scores.home[q]! > game.scores.away[q]! &&
-                                "text-green-500",
-                              game.scores.home[q]! < game.scores.away[q]! &&
-                                "text-red-500",
-                              game.scores.home[q]! === game.scores.away[q]! &&
-                                "text-orange-500"
-                            )}
-                          >
-                            {game.scores.home[q]}
-                          </TableCell>
-                        ))}
-                    </TableRow>
-
-                    {/* Away Team Row */}
-                    <TableRow className="text-center">
-                      <TableCell className="text-center">
-                        <div className="flex justify-center">
-                          <Image
-                            src={game.teams.away.logo}
-                            alt={game.teams.away.name}
-                            width={25}
-                            height={25}
-                          />
-                        </div>
-                      </TableCell>
-                      {(
-                        Object.keys(game.scores.away) as Array<
-                          keyof typeof game.scores.away
-                        >
-                      )
-                        .filter(
-                          (q) =>
-                            q !== "total" && game.scores.away[q] !== undefined
-                        )
-                        .map((q, index) => (
-                          <TableCell
-                            key={index}
-                            className={cn(
-                              "text-center",
-                              game.scores.away[q]! > game.scores.home[q]! &&
-                                "text-green-500",
-                              game.scores.away[q]! < game.scores.home[q]! &&
-                                "text-red-500",
-                              game.scores.away[q]! === game.scores.home[q]! &&
-                                "text-orange-500"
-                            )}
-                          >
-                            {game.scores.away[q]}
-                          </TableCell>
-                        ))}
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-
-            <CardFooter className="border-t pt-3 text-center space-x-5">
-              <p className="text-sm text-gray-600">
-                Venue: <span className="font-semibold">{game.venue}</span>
-              </p>
-              <p className="text-sm text-gray-600 flex items-center justify-center gap-2">
-                <Image
-                  src={game.country.flag}
-                  alt={game.country.name}
-                  width={20}
-                  height={15}
-                />
-                {game.country.name}
-              </p>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
