@@ -25,7 +25,7 @@ import { DatePickerDemo } from "@/components/DatePickerDemo";
 import ViewSelector from "@/components/ViewSelector";
 
 const NBAStandings = () => {
-  const { isMobile } = useDeviceType();
+  const { isMobile, isDesktop, isTablet } = useDeviceType();
   const [view, setView] = useState("list");
 
   useEffect(() => {
@@ -158,7 +158,7 @@ const NBAStandings = () => {
         <ViewSelector onViewChange={handleViewChange} />
       </h1>
       {view === "list" && (
-        <div className="flex flex-col gap-4 ">
+        <div className="flex flex-col gap-4">
           {filteredGames.map((game) => (
             <div
               key={game.id}
@@ -175,9 +175,11 @@ const NBAStandings = () => {
                     height={30}
                     className="w-8 h-8"
                   />
-                  <span className="text-sm font-semibold w-28 truncate text-right">
-                    {game.teams.home.name}
-                  </span>
+                  {!isMobile && (
+                    <span className="text-sm font-semibold w-28 truncate text-right">
+                      {game.teams.home.name}
+                    </span>
+                  )}
                 </div>
 
                 <span className="text-xs font-medium text-gray-600 w-10 text-center">
@@ -186,9 +188,12 @@ const NBAStandings = () => {
 
                 {/* Away Team */}
                 <div className="flex items-center space-x-2 w-48 justify-start">
-                  <span className="text-sm font-semibold w-28 truncate text-left">
-                    {game.teams.away.name}
-                  </span>
+                  {!isMobile && (
+                    <span className="text-sm font-semibold w-28 truncate text-left">
+                      {game.teams.away.name}
+                    </span>
+                  )}
+
                   <Image
                     src={game.teams.away.logo}
                     alt={game.teams.away.name}
@@ -222,109 +227,121 @@ const NBAStandings = () => {
                 </span>
               </div>
 
-              {/* Bottom Section: Quarter Scores */}
-              <div className="flex items-center text-xs text-gray-700 space-x-5">
-                {/* Left: Q1 & Q2 */}
-                <div className="flex flex-col space-y-1">
-                  <div className="flex space-x-2">
-                    <span className="font-semibold">Q1:</span>
-                    <span
-                      className={`font-semibold ${
-                        game.scores.home.quarter_1 > game.scores.away.quarter_1
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {game.scores.home.quarter_1}
-                    </span>
-                    <span>-</span>
-                    <span
-                      className={`font-semibold ${
-                        game.scores.away.quarter_1 > game.scores.home.quarter_1
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {game.scores.away.quarter_1}
-                    </span>
+              {/* Only show quarter scores and time for Desktop */}
+              {(isDesktop || isTablet) && (
+                <div className="flex items-center text-xs text-gray-700 space-x-5">
+                  {/* Left: Q1 & Q2 */}
+                  <div className="flex flex-col space-y-1">
+                    <div className="flex space-x-2">
+                      <span className="font-semibold">Q1:</span>
+                      <span
+                        className={`font-semibold ${
+                          game.scores.home.quarter_1 >
+                          game.scores.away.quarter_1
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {game.scores.home.quarter_1}
+                      </span>
+                      <span>-</span>
+                      <span
+                        className={`font-semibold ${
+                          game.scores.away.quarter_1 >
+                          game.scores.home.quarter_1
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {game.scores.away.quarter_1}
+                      </span>
+                    </div>
+                    <div className="flex space-x-2">
+                      <span className="font-semibold">Q2:</span>
+                      <span
+                        className={`font-semibold ${
+                          game.scores.home.quarter_2 >
+                          game.scores.away.quarter_2
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {game.scores.home.quarter_2}
+                      </span>
+                      <span>-</span>
+                      <span
+                        className={`font-semibold ${
+                          game.scores.away.quarter_2 >
+                          game.scores.home.quarter_2
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {game.scores.away.quarter_2}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex space-x-2">
-                    <span className="font-semibold">Q2:</span>
-                    <span
-                      className={`font-semibold ${
-                        game.scores.home.quarter_2 > game.scores.away.quarter_2
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {game.scores.home.quarter_2}
-                    </span>
-                    <span>-</span>
-                    <span
-                      className={`font-semibold ${
-                        game.scores.away.quarter_2 > game.scores.home.quarter_2
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {game.scores.away.quarter_2}
-                    </span>
+
+                  {/* Right: Q3 & Q4 */}
+                  <div className="flex flex-col space-y-1">
+                    <div className="flex space-x-2">
+                      <span className="font-semibold">Q3:</span>
+                      <span
+                        className={`font-semibold ${
+                          game.scores.home.quarter_3 >
+                          game.scores.away.quarter_3
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {game.scores.home.quarter_3}
+                      </span>
+                      <span>-</span>
+                      <span
+                        className={`font-semibold ${
+                          game.scores.away.quarter_3 >
+                          game.scores.home.quarter_3
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {game.scores.away.quarter_3}
+                      </span>
+                    </div>
+                    <div className="flex space-x-2">
+                      <span className="font-semibold">Q4:</span>
+                      <span
+                        className={`font-semibold ${
+                          game.scores.home.quarter_4 >
+                          game.scores.away.quarter_4
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {game.scores.home.quarter_4}
+                      </span>
+                      <span>-</span>
+                      <span
+                        className={`font-semibold ${
+                          game.scores.away.quarter_4 >
+                          game.scores.home.quarter_4
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {game.scores.away.quarter_4}
+                      </span>
+                    </div>
                   </div>
                 </div>
+              )}
 
-                {/* Right: Q3 & Q4 */}
-                <div className="flex flex-col space-y-1">
-                  <div className="flex space-x-2">
-                    <span className="font-semibold">Q3:</span>
-                    <span
-                      className={`font-semibold ${
-                        game.scores.home.quarter_3 > game.scores.away.quarter_3
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {game.scores.home.quarter_3}
-                    </span>
-                    <span>-</span>
-                    <span
-                      className={`font-semibold ${
-                        game.scores.away.quarter_3 > game.scores.home.quarter_3
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {game.scores.away.quarter_3}
-                    </span>
-                  </div>
-                  <div className="flex space-x-2">
-                    <span className="font-semibold">Q4:</span>
-                    <span
-                      className={`font-semibold ${
-                        game.scores.home.quarter_4 > game.scores.away.quarter_4
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {game.scores.home.quarter_4}
-                    </span>
-                    <span>-</span>
-                    <span
-                      className={`font-semibold ${
-                        game.scores.away.quarter_4 > game.scores.home.quarter_4
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {game.scores.away.quarter_4}
-                    </span>
-                  </div>
+              {/* Show time only for Desktop */}
+              {isDesktop && (
+                <div className="text-xs text-gray-500 text-right w-32">
+                  {format(new Date(game.date), "dd MMM yyyy, h:mm a")}
                 </div>
-              </div>
-
-              {/* Right Section: Game Date */}
-              <div className="text-xs text-gray-500 text-right w-32">
-                {format(new Date(game.date), "dd MMM yyyy, h:mm a")}
-              </div>
+              )}
             </div>
           ))}
         </div>
