@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 interface DateCarouselProps {
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
-  enabledDates: string[]; // List of enabled dates (from nbaGames)
+  enabledDates: string[];
 }
 
 const DateCarousel: React.FC<DateCarouselProps> = ({
@@ -15,22 +15,22 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
   setSelectedDate,
   enabledDates,
 }) => {
-  const [visibleDays, setVisibleDays] = useState(7); // Default: Show 7 dates
+  const [visibleDays, setVisibleDays] = useState(7);
+  const [isNextDisabled, setIsNextDisabled] = useState(false);
+  const [isPrevDisabled, setIsPrevDisabled] = useState(false);
 
-  // Get the start of the week (Monday)
   const startOfCurrentWeek = startOfWeek(selectedDate, { weekStartsOn: 1 });
 
-  // Adjust number of visible dates based on screen size
   useEffect(() => {
     const updateVisibleDays = () => {
       if (window.innerWidth >= 1024) {
-        setVisibleDays(7); // Large screens
+        setVisibleDays(7);
       } else if (window.innerWidth >= 768) {
-        setVisibleDays(5); // Tablets
+        setVisibleDays(5);
       } else if (window.innerWidth >= 480) {
-        setVisibleDays(3); // Small screens
+        setVisibleDays(3);
       } else {
-        setVisibleDays(1); // Very small screens
+        setVisibleDays(1);
       }
     };
 
@@ -39,40 +39,34 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
     return () => window.removeEventListener("resize", updateVisibleDays);
   }, []);
 
-  // Generate the number of dates to display
   const weekDates = Array.from({ length: visibleDays }, (_, i) =>
     addDays(startOfCurrentWeek, i)
   );
 
-  // Set selected date to the latest enabled date when enabledDates changes
   useEffect(() => {
     if (enabledDates.length > 0) {
-      // Convert string dates to Date objects and sort them
       const sortedDates = enabledDates
-        .map((date) => new Date(date)) // Convert strings to Date objects
-        .sort((a, b) => b.getTime() - a.getTime()); // Sort by date descending
+        .map((date) => new Date(date))
+        .sort((a, b) => b.getTime() - a.getTime());
 
-      const latestEnabledDate = sortedDates[0]; // Get the latest enabled date
-      setSelectedDate(latestEnabledDate); // Set the latest enabled date
+      const latestEnabledDate = sortedDates[0];
+      setSelectedDate(latestEnabledDate);
     }
   }, [enabledDates, setSelectedDate]);
 
-  // Handle date selection
   const handleDateSelect = (date: Date) => {
     const formattedDate = format(date, "yyyy-MM-dd");
     if (enabledDates.includes(formattedDate)) {
-      setSelectedDate(date); // Only select if it's an enabled date
+      setSelectedDate(date);
     }
   };
 
-  // Function to get the nearest enabled date from the current selection
   const getNearestEnabledDate = (direction: "next" | "prev") => {
     const formattedSelectedDate = format(selectedDate, "yyyy-MM-dd");
 
-    // Convert string dates to Date objects and sort them
     const sortedAvailableDates = enabledDates
       .map((date) => new Date(date))
-      .sort((a, b) => a.getTime() - b.getTime()); // Sort by date ascending
+      .sort((a, b) => a.getTime() - b.getTime());
 
     let nearestDate = null;
 
@@ -86,38 +80,54 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
         .find((date) => date < new Date(formattedSelectedDate));
     }
 
-    // Return nearest date or default to the current selected date if none found
     return nearestDate ? nearestDate : selectedDate;
   };
 
-  // Handle moving to the next set of dates
   const handleNext = () => {
     const newSelectedDate = getNearestEnabledDate("next");
     setSelectedDate(newSelectedDate);
   };
 
-  // Handle moving to the previous set of dates
   const handlePrev = () => {
     const newSelectedDate = getNearestEnabledDate("prev");
     setSelectedDate(newSelectedDate);
   };
 
-  return (
-    <div className="flex items-center space-x-2shadow-md rounded-lg w-full">
-      {/* Left Arrow - Previous Week */}
-      <button
-        className="p-2 rounded-full hover:bg-gray-200 transition"
-        onClick={handlePrev}
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
+  useEffect(() => {
+    const formattedSelectedDate = format(selectedDate, "yyyy-MM-dd");
 
-      {/* Scrollable Week Carousel */}
+    const sortedAvailableDates = enabledDates
+      .map((date) => new Date(date))
+      .sort((a, b) => a.getTime() - b.getTime());
+
+    const nextEnabledDate = sortedAvailableDates.find(
+      (date) => date > new Date(formattedSelectedDate)
+    );
+    setIsNextDisabled(!nextEnabledDate);
+
+    const prevEnabledDate = [...sortedAvailableDates]
+      .reverse()
+      .find((date) => date < new Date(formattedSelectedDate));
+    setIsPrevDisabled(!prevEnabledDate);
+  }, [selectedDate, enabledDates]);
+
+  return (
+    <div className="flex items-center space-x-2 shadow-md rounded-lg w-full">
+      {!isPrevDisabled && (
+        <button
+          className="p-2 rounded-full hover:bg-gray-200 transition"
+          onClick={handlePrev}
+          disabled={isPrevDisabled}
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+      )}
+
       <div className="flex-1 overflow-hidden">
         <div className="flex justify-center items-center space-x-2 overflow-x-auto scrollbar-hide w-full">
           {weekDates.map((date) => {
             const formattedDate = format(date, "yyyy-MM-dd");
-            const isEnabled = enabledDates.includes(formattedDate); // Check if the date is enabled
+            const isEnabled = enabledDates.includes(formattedDate);
 
             return (
               <button
@@ -126,12 +136,12 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
                   isEnabled
                     ? format(date, "yyyy-MM-dd") ===
                       format(selectedDate, "yyyy-MM-dd")
-                      ? "bg-blue-500 text-white font-semibold" // Selected date styles
-                      : "bg-gray-100 text-gray-700" // Regular enabled date styles
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed" // Disabled date styles
+                      ? "bg-blue-500 text-white font-semibold"
+                      : "bg-gray-100 text-gray-700"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
                 onClick={() => handleDateSelect(date)}
-                disabled={!isEnabled} // Disable the button if the date is not in enabledDates
+                disabled={!isEnabled}
               >
                 <span className="text-sm">{format(date, "EEE")}</span>
                 <span className="text-lg">{format(date, "MMM d")}</span>
@@ -140,16 +150,16 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
           })}
         </div>
       </div>
+      {!isNextDisabled && (
+        <button
+          className="p-2 rounded-full hover:bg-gray-200 transition"
+          onClick={handleNext}
+          disabled={isNextDisabled}
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      )}
 
-      {/* Right Arrow - Next Week */}
-      <button
-        className="p-2 rounded-full hover:bg-gray-200 transition"
-        onClick={handleNext}
-      >
-        <ChevronRight className="w-5 h-5" />
-      </button>
-
-      {/* Date Picker Button */}
       <DatePicker
         selected={selectedDate}
         onChange={(date: Date | null) => date && setSelectedDate(date)}
