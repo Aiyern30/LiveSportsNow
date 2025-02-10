@@ -26,8 +26,8 @@ const NBAStandings = () => {
   console.log("nbaGames", nbaGames);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState(new Date()); // Manage selected date
-  const [enabledDates, setEnabledDates] = useState<string[]>([]); // Store enabled dates
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [enabledDates, setEnabledDates] = useState<string[]>([]);
 
   useEffect(() => {
     const getNBAGames = async () => {
@@ -39,13 +39,16 @@ const NBAStandings = () => {
         const availableDates = data.map((game) =>
           format(new Date(game.date), "yyyy-MM-dd")
         );
-        const uniqueAvailableDates = Array.from(new Set(availableDates)); // Remove duplicates
+        const uniqueAvailableDates = Array.from(new Set(availableDates));
         setEnabledDates(uniqueAvailableDates);
 
-        // Set the default selected date to the latest available date
-        const latestDate = uniqueAvailableDates.sort().pop();
+        const latestDate = uniqueAvailableDates
+          .map((date) => new Date(date))
+          .sort((a, b) => b.getTime() - a.getTime())
+          .shift();
+
         if (latestDate) {
-          setSelectedDate(new Date(latestDate)); // Set to latest available date
+          setSelectedDate(latestDate);
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -64,7 +67,6 @@ const NBAStandings = () => {
   if (loading) return <div className="text-center text-lg">Loading...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
-  // 🔹 FILTER NBA GAMES BASED ON SELECTED DATE
   const filteredGames = nbaGames.filter(
     (game) =>
       format(new Date(game.date), "yyyy-MM-dd") ===
@@ -76,7 +78,7 @@ const NBAStandings = () => {
       <DateCarousel
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
-        enabledDates={enabledDates} // Pass enabledDates instead of disabledDates
+        enabledDates={enabledDates}
       />
 
       <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>
@@ -119,7 +121,6 @@ const NBAStandings = () => {
                 <p className="text-lg font-semibold">{game.teams.home.name}</p>
                 <p className="text-lg font-semibold">{game.teams.away.name}</p>
 
-                {/* Row 3: Total Scores (Comparison Applied) */}
                 <p
                   className={cn(
                     "text-2xl font-bold",
