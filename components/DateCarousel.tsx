@@ -112,7 +112,7 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
   }, [selectedDate, enabledDates]);
 
   return (
-    <div className="flex items-center space-x-2 shadow-md rounded-lg w-full">
+    <div className="flex items-center space-x-2 rounded-lg w-full">
       {!isPrevDisabled && (
         <button
           className="p-2 rounded-full hover:bg-gray-200 transition"

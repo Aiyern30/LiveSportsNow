@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { List, Grid, Table } from "lucide-react";
 
 const ViewSelector: React.FC<{ onViewChange: (view: string) => void }> = ({
   onViewChange,
 }) => {
-  const savedView = localStorage.getItem("viewPreference") || "list";
-  const [view, setView] = useState(savedView);
+  const [view, setView] = useState("list");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedView = localStorage.getItem("viewPreference");
+      if (savedView) {
+        setView(savedView);
+      }
+    }
+  }, []);
 
   const handleViewChange = (newView: string) => {
     setView(newView);
-    localStorage.setItem("viewPreference", newView);
-    onViewChange(newView); // Notify parent component of the change
+    if (typeof window !== "undefined") {
+      localStorage.setItem("viewPreference", newView);
+    }
+    onViewChange(newView);
   };
 
   return (
