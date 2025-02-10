@@ -79,7 +79,7 @@ const NBAStandings = () => {
   return (
     <div className="mx-auto p-4">
       {isMobile ? (
-        <div className="flex justify-center">
+        <div className="flex justify-center items-center h-20">
           <DatePickerDemo
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -93,7 +93,7 @@ const NBAStandings = () => {
         />
       )}
       <h1 className="text-2xl font-bold text-center my-6">NBA Games</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredGames.map((game) => (
           <Card key={game.id} className="p-4 shadow-lg">
             <CardHeader className="text-center">
