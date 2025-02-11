@@ -28,9 +28,9 @@ const TopNav = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex h-16 items-center px-4 bg-white shadow-md">
+      <div className="flex h-16 items-center px-4 bg-white shadow-md ">
         <NavigationMenu>
-          <NavigationMenuList className="flex space-x-2">
+          <NavigationMenuList className="flex space-x-4 min-w-max">
             <NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
