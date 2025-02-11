@@ -154,7 +154,7 @@ const NBAStandings = () => {
         />
       )}
       <h1 className="text-2xl font-bold my-6 flex justify-between items-center w-full">
-        <div className="mx-auto">NBA Games</div>
+        <div className="lg:mx-auto">NBA Games</div>
         <ViewSelector onViewChange={handleViewChange} />
       </h1>
       {view === "list" && (
@@ -162,12 +162,12 @@ const NBAStandings = () => {
           {filteredGames.map((game) => (
             <div
               key={game.id}
-              className="bg-gray-100 p-4 rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer transition hover:shadow-md"
+              className="bg-gray-100 p-4 rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer transition hover:shadow-md w-72 mx-auto sm:w-auto sm:mx-0"
             >
               {/* Top Section: Team Names & Scores */}
               <div className="flex flex-col sm:flex-row sm:items-center w-full">
                 {/* Home & Away Teams */}
-                <div className="flex items-center justify-center sm:justify-start w-full sm:w-auto gap-2">
+                <div className="flex items-center justify-center sm:justify-start w-1/2 sm:w-auto gap-2">
                   {/* Home Team */}
                   <div className="flex items-center space-x-2 w-36 justify-end">
                     <Image
@@ -206,7 +206,7 @@ const NBAStandings = () => {
                 </div>
 
                 {/* Score Section (Moves to second row on mobile) */}
-                <div className="flex items-center space-x-2 my-2 sm:my-0 w-full sm:w-auto justify-center sm:justify-start">
+                <div className="flex items-center space-x-2 my-2 sm:my-0 w-full sm:w-auto justify-center ">
                   <span
                     className={`text-lg font-bold ${
                       game.scores.home.total > game.scores.away.total
