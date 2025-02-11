@@ -25,7 +25,7 @@ import { DatePickerDemo } from "@/components/DatePickerDemo";
 import ViewSelector from "@/components/ViewSelector";
 
 const NBAStandings = () => {
-  const { isMobile, isDesktop, isTablet } = useDeviceType();
+  const { isMobile, isDesktop } = useDeviceType();
   const [view, setView] = useState("list");
 
   useEffect(() => {
@@ -165,70 +165,72 @@ const NBAStandings = () => {
               className="bg-gray-100 p-4 rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer transition hover:shadow-md"
             >
               {/* Top Section: Team Names & Scores */}
-              <div className="flex items-center space-x-3 min-w-[500px]">
-                {/* Home Team */}
-                <div className="flex items-center space-x-2 w-48 justify-end">
-                  <Image
-                    src={game.teams.home.logo}
-                    alt={game.teams.home.name}
-                    width={30}
-                    height={30}
-                    className="w-8 h-8"
-                  />
-                  {!isMobile && (
-                    <span className="text-sm font-semibold w-28 truncate text-right">
-                      {game.teams.home.name}
-                    </span>
-                  )}
+              <div className="flex flex-col sm:flex-row sm:items-center w-full">
+                {/* Home & Away Teams */}
+                <div className="flex items-center justify-center sm:justify-start w-full sm:w-auto gap-2">
+                  {/* Home Team */}
+                  <div className="flex items-center space-x-2 w-36 justify-end">
+                    <Image
+                      src={game.teams.home.logo}
+                      alt={game.teams.home.name}
+                      width={30}
+                      height={30}
+                      className="w-8 h-8"
+                    />
+                    {!isMobile && (
+                      <span className="text-sm font-semibold w-28 truncate text-right">
+                        {game.teams.home.name}
+                      </span>
+                    )}
+                  </div>
+
+                  <span className="text-xs font-medium text-gray-600 w-10 text-center">
+                    VS
+                  </span>
+
+                  {/* Away Team */}
+                  <div className="flex items-center space-x-2 w-36 justify-start">
+                    {!isMobile && (
+                      <span className="text-sm font-semibold w-28 truncate text-left">
+                        {game.teams.away.name}
+                      </span>
+                    )}
+                    <Image
+                      src={game.teams.away.logo}
+                      alt={game.teams.away.name}
+                      width={30}
+                      height={30}
+                      className="w-8 h-8"
+                    />
+                  </div>
                 </div>
 
-                <span className="text-xs font-medium text-gray-600 w-10 text-center">
-                  VS
-                </span>
-
-                {/* Away Team */}
-                <div className="flex items-center space-x-2 w-48 justify-start">
-                  {!isMobile && (
-                    <span className="text-sm font-semibold w-28 truncate text-left">
-                      {game.teams.away.name}
-                    </span>
-                  )}
-
-                  <Image
-                    src={game.teams.away.logo}
-                    alt={game.teams.away.name}
-                    width={30}
-                    height={30}
-                    className="w-8 h-8"
-                  />
+                {/* Score Section (Moves to second row on mobile) */}
+                <div className="flex items-center space-x-2 my-2 sm:my-0 w-full sm:w-auto justify-center sm:justify-start">
+                  <span
+                    className={`text-lg font-bold ${
+                      game.scores.home.total > game.scores.away.total
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.home.total}
+                  </span>
+                  <span className="text-lg font-bold">-</span>
+                  <span
+                    className={`text-lg font-bold ${
+                      game.scores.away.total > game.scores.home.total
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.away.total}
+                  </span>
                 </div>
               </div>
 
-              {/* Middle Section: Total Score */}
-              <div className="flex items-center space-x-2 my-2 sm:my-0">
-                <span
-                  className={`text-lg font-bold ${
-                    game.scores.home.total > game.scores.away.total
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {game.scores.home.total}
-                </span>
-                <span className="text-lg font-bold">-</span>
-                <span
-                  className={`text-lg font-bold ${
-                    game.scores.away.total > game.scores.home.total
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {game.scores.away.total}
-                </span>
-              </div>
-
-              {/* Only show quarter scores and time for Desktop */}
-              {(isDesktop || isTablet) && (
+              {/* Show quarter scores and time only for Desktop */}
+              {isDesktop && (
                 <div className="flex items-center text-xs text-gray-700 space-x-5">
                   {/* Left: Q1 & Q2 */}
                   <div className="flex flex-col space-y-1">
