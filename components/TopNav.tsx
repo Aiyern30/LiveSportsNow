@@ -28,8 +28,7 @@ const TopNav = () => {
 
   return (
     <div className="flex flex-col">
-      {/* Added overflow-x-auto for horizontal scrolling */}
-      <div className="flex h-16 items-center px-4 bg-white shadow-md overflow-x-auto whitespace-nowrap scrollbar-hide">
+      <div className="flex h-16 items-center px-4 bg-white shadow-md ">
         <NavigationMenu>
           <NavigationMenuList className="flex space-x-4 min-w-max">
             <NavigationMenuItem>
@@ -58,7 +57,7 @@ const TopNav = () => {
               ></div>
             </NavigationMenuItem>
 
-            {/* <NavigationMenuItem>
+            <NavigationMenuItem>
               <Link href="/NBA/Schedule" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Schedule
@@ -95,7 +94,7 @@ const TopNav = () => {
                   isActive("/NBA/Stats") ? "visible" : "invisible"
                 }`}
               ></div>
-            </NavigationMenuItem> */}
+            </NavigationMenuItem>
 
             <NavigationMenuItem>
               <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>

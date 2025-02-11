@@ -206,7 +206,7 @@ const NBAStandings = () => {
                 </div>
 
                 {/* Score Section (Moves to second row on mobile) */}
-                <div className="flex items-center space-x-2 my-2 sm:my-0 w-full sm:w-auto justify-center ">
+                <div className="flex items-center space-x-2 my-2 sm:my-0 w-full sm:w-auto sm:mx-auto justify-center ">
                   <span
                     className={`text-lg font-bold ${
                       game.scores.home.total > game.scores.away.total
