@@ -8,7 +8,14 @@ import {
   DialogContent,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
   DialogTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui";
 import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
 import { PlayerStats } from "@/type/NBA/gamePlayer";
@@ -159,32 +166,81 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
 
       {dialogOpen && (
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent>
-            <DialogTitle>Top Players for Game {selectedGameId}</DialogTitle>
-            <DialogDescription>
-              Here are the top players for this game. Review their stats.
-            </DialogDescription>
+          <DialogContent className="sm:max-w-[425px] md:max-w-[600px] lg:max-w-[800px] max-h-[80vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>Top Players for Game {selectedGameId}</DialogTitle>
+              <DialogDescription>
+                Here are the top players for this game. Review their stats.
+              </DialogDescription>
+            </DialogHeader>
             <div className="overflow-x-auto">
-              <table className="min-w-full table-auto">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2">Player</th>
-                    <th className="px-4 py-2">Points</th>
-                    <th className="px-4 py-2">Assists</th>
-                    <th className="px-4 py-2">Rebounds</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table className="min-w-[500px]">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[200px]">Player</TableHead>
+                    <TableHead className="text-right">Minutes</TableHead>
+                    <TableHead className="text-right">Points</TableHead>
+                    <TableHead className="text-right">Assists</TableHead>
+                    <TableHead className="text-right">Rebounds</TableHead>
+                    <TableHead className="text-right">Field Goals</TableHead>
+                    <TableHead className="text-right">3P Goals</TableHead>
+                    <TableHead className="text-right">FT Goals</TableHead>
+                    <TableHead className="text-right">Type</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {nbaPlayer.map((player) => (
-                    <tr key={player.player.id}>
-                      <td className="px-4 py-2">{player.player.name}</td>
-                      <td className="px-4 py-2">{player.points}</td>
-                      <td className="px-4 py-2">{player.assists}</td>
-                      <td className="px-4 py-2">{player.rebounds.total}</td>
-                    </tr>
+                    <TableRow key={player.player.id}>
+                      {/* Player Name */}
+                      <TableCell className="font-medium">
+                        {player.player.name}
+                      </TableCell>
+                      {/* Points */}
+                      <TableCell className="text-right">
+                        {player.minutes}
+                      </TableCell>
+
+                      {/* Points */}
+                      <TableCell className="text-right">
+                        {player.points}
+                      </TableCell>
+
+                      {/* Assists */}
+                      <TableCell className="text-right">
+                        {player.assists}
+                      </TableCell>
+
+                      {/* Rebounds */}
+                      <TableCell className="text-right">
+                        {player.rebounds.total}
+                      </TableCell>
+
+                      {/* Field Goals (total/attempts) */}
+                      <TableCell className="text-right">
+                        {player.field_goals.total} /{" "}
+                        {player.field_goals.attempts}
+                      </TableCell>
+
+                      {/* Three-point Goals (total/attempts) */}
+                      <TableCell className="text-right">
+                        {player.threepoint_goals.total} /{" "}
+                        {player.threepoint_goals.attempts}
+                      </TableCell>
+
+                      {/* Free Throws (total/attempts) */}
+                      <TableCell className="text-right">
+                        {player.freethrows_goals.total} /{" "}
+                        {player.freethrows_goals.attempts}
+                      </TableCell>
+
+                      {/* Player Type */}
+                      <TableCell className="text-right">
+                        {player.type}
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
             <DialogFooter>
               <Button type="button" onClick={() => setDialogOpen(false)}>
