@@ -42,5 +42,15 @@ interface FieldGoals {
     assists: number;
     points: number;
   }
+
+  export interface NBAPlayerStatsResponse {
+    get: string;
+    parameters: {
+      id: string; // Game ID
+    };
+    errors: unknown[];
+    results: number;
+    response: PlayerStats[];
+  }
   
  
