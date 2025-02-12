@@ -4,22 +4,18 @@ import { List, Grid, Table } from "lucide-react";
 const ViewSelector: React.FC<{ onViewChange: (view: string) => void }> = ({
   onViewChange,
 }) => {
-  const [view, setView] = useState("list");
+  const [view, setView] = useState<"list" | "grid" | "table">("list");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedView = localStorage.getItem("viewPreference");
-      if (savedView) {
-        setView(savedView);
-      }
+    const savedView = localStorage.getItem("viewPreference");
+    if (savedView) {
+      setView(savedView as "list" | "grid" | "table");
     }
   }, []);
 
-  const handleViewChange = (newView: string) => {
+  const handleViewChange = (newView: "list" | "grid" | "table") => {
     setView(newView);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("viewPreference", newView);
-    }
+    localStorage.setItem("viewPreference", newView);
     onViewChange(newView);
   };
 

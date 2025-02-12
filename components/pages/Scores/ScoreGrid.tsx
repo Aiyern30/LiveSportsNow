@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC } from "react";
 import Image from "next/image";
 import { NBAGame } from "@/type/NBA/game";
@@ -6,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
+  Table,
   TableHeader,
   TableRow,
   TableHead,
@@ -14,7 +17,6 @@ import {
   CardFooter,
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
-import { Table } from "lucide-react";
 
 interface ScoreGrid {
   filteredGames: NBAGame[];

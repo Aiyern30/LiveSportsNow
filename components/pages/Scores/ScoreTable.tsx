@@ -1,3 +1,5 @@
+"use client";
+
 import type { FC } from "react";
 import Image from "next/image";
 import type { NBAGame } from "@/type/NBA/game";
@@ -61,7 +63,10 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
                 <TableCell className="border border-gray-300 p-3">
                   <div className="flex items-center space-x-2">
                     <Image
-                      src={game.teams.home.logo || "/placeholder.svg"}
+                      src={
+                        game.teams.home.logo ||
+                        "https://wilsonsports.co.za/wp-content/uploads/2021/07/NBA-DRV-PLUS-BASKETBALL-SIZE-6-WTB9200XB06.png"
+                      }
                       alt={game.teams.home.name}
                       width={30}
                       height={30}
@@ -76,7 +81,10 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
                   <div className="flex items-center space-x-2">
                     {!isMobile && <span>{game.teams.away.name}</span>}
                     <Image
-                      src={game.teams.away.logo || "/placeholder.svg"}
+                      src={
+                        game.teams.away.logo ||
+                        "https://wilsonsports.co.za/wp-content/uploads/2021/07/NBA-DRV-PLUS-BASKETBALL-SIZE-6-WTB9200XB06.png"
+                      }
                       alt={game.teams.away.name}
                       width={30}
                       height={30}
