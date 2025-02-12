@@ -1,5 +1,5 @@
 export interface NBAGame {
-    id: number;
+    id: string;
     date: string;
     time: string;
     timestamp: number;

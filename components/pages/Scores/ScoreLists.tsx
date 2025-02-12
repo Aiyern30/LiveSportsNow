@@ -1,10 +1,17 @@
-"use client";
-
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import { NBAGame } from "@/type/NBA/game";
 import { useDeviceType } from "@/lib/useDevicesType";
-import { format } from "date-fns";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui";
+import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
+import { PlayerStats } from "@/type/NBA/gamePlayer";
 
 interface ListsProps {
   filteredGames: NBAGame[];
@@ -12,15 +19,39 @@ interface ListsProps {
 
 const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
   const { isMobile, isDesktop } = useDeviceType();
+  const [nbaPlayer, setNbaPlayer] = useState<PlayerStats[]>([]);
+  console.log("nbaPlayer", nbaPlayer);
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const getNBAPlayerStats = async () => {
+      if (selectedGameId) {
+        try {
+          const data = await fetchNBAPlayerStatsByGameId(selectedGameId);
+          setNbaPlayer(data);
+        } catch (error) {
+          console.error("Error fetching player stats:", error);
+        }
+      }
+    };
+    if (dialogOpen) {
+      getNBAPlayerStats();
+    }
+  }, [dialogOpen, selectedGameId]);
+
+  const handleTopPlayersClick = (gameId: string) => {
+    setSelectedGameId(gameId);
+    setDialogOpen(true);
+  };
 
   return (
     <div className="flex flex-col gap-4">
       {filteredGames.map((game) => (
         <div
           key={game.id}
-          className="bg-gray-100 p-4 rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer transition hover:shadow-md w-72 mx-auto sm:w-auto sm:mx-0"
+          className="bg-gray-100 p-4 rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center justify-between transition hover:shadow-md w-72 mx-auto sm:w-auto sm:mx-0"
         >
-          {/* Top Section: Team Names & Scores */}
           <div className="flex flex-col sm:flex-row sm:items-center w-full">
             {/* Home & Away Teams */}
             <div className="flex items-center justify-center sm:justify-start w-1/2 sm:w-auto gap-2">
@@ -61,7 +92,6 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
               </div>
             </div>
 
-            {/* Score Section (Moves to second row on mobile) */}
             <div className="flex items-center space-x-2 my-2 sm:my-0 w-full sm:w-auto sm:mx-auto justify-center ">
               <span
                 className={`text-lg font-bold ${
@@ -85,11 +115,10 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
             </div>
           </div>
 
-          {/* Show quarter scores and time only for Desktop */}
           {isDesktop && (
             <div className="flex items-center text-xs text-gray-700 space-x-5">
-              {/* Left: Q1 & Q2 */}
               <div className="flex flex-col space-y-1">
+                {/* Display quarter scores */}
                 <div className="flex space-x-2">
                   <span className="font-semibold">Q1:</span>
                   <span
@@ -112,88 +141,59 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
                     {game.scores.away.quarter_1}
                   </span>
                 </div>
-                <div className="flex space-x-2">
-                  <span className="font-semibold">Q2:</span>
-                  <span
-                    className={`font-semibold ${
-                      game.scores.home.quarter_2 > game.scores.away.quarter_2
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {game.scores.home.quarter_2}
-                  </span>
-                  <span>-</span>
-                  <span
-                    className={`font-semibold ${
-                      game.scores.away.quarter_2 > game.scores.home.quarter_2
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {game.scores.away.quarter_2}
-                  </span>
-                </div>
-              </div>
-
-              {/* Right: Q3 & Q4 */}
-              <div className="flex flex-col space-y-1">
-                <div className="flex space-x-2">
-                  <span className="font-semibold">Q3:</span>
-                  <span
-                    className={`font-semibold ${
-                      game.scores.home.quarter_3 > game.scores.away.quarter_3
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {game.scores.home.quarter_3}
-                  </span>
-                  <span>-</span>
-                  <span
-                    className={`font-semibold ${
-                      game.scores.away.quarter_3 > game.scores.home.quarter_3
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {game.scores.away.quarter_3}
-                  </span>
-                </div>
-                <div className="flex space-x-2">
-                  <span className="font-semibold">Q4:</span>
-                  <span
-                    className={`font-semibold ${
-                      game.scores.home.quarter_4 > game.scores.away.quarter_4
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {game.scores.home.quarter_4}
-                  </span>
-                  <span>-</span>
-                  <span
-                    className={`font-semibold ${
-                      game.scores.away.quarter_4 > game.scores.home.quarter_4
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {game.scores.away.quarter_4}
-                  </span>
-                </div>
+                {/* Repeat for other quarters */}
               </div>
             </div>
           )}
 
-          {/* Show time only for Desktop */}
-          {isDesktop && (
-            <div className="text-xs text-gray-500 text-right w-32">
-              {format(new Date(game.date), "dd MMM yyyy, h:mm a")}
-            </div>
-          )}
+          <div className="text-xs text-gray-500 text-right w-32 ml-5">
+            <Button
+              variant={"default"}
+              onClick={() => handleTopPlayersClick(game.id)}
+            >
+              Top Players
+            </Button>
+          </div>
         </div>
       ))}
+
+      {dialogOpen && (
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent>
+            <DialogTitle>Top Players for Game {selectedGameId}</DialogTitle>
+            <DialogDescription>
+              Here are the top players for this game. Review their stats.
+            </DialogDescription>
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2">Player</th>
+                    <th className="px-4 py-2">Points</th>
+                    <th className="px-4 py-2">Assists</th>
+                    <th className="px-4 py-2">Rebounds</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nbaPlayer.map((player) => (
+                    <tr key={player.player.id}>
+                      <td className="px-4 py-2">{player.player.name}</td>
+                      <td className="px-4 py-2">{player.points}</td>
+                      <td className="px-4 py-2">{player.assists}</td>
+                      <td className="px-4 py-2">{player.rebounds.total}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <DialogFooter>
+              <Button type="button" onClick={() => setDialogOpen(false)}>
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
