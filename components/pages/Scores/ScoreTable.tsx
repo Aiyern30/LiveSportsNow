@@ -40,7 +40,7 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
             <TableCell>
               {format(new Date(game.date), "dd MMM yyyy, h:mm a")}
             </TableCell>
-            <TableCell className="flex items-center justify-start space-x-2">
+            <TableCell className="p-2 align-middle">
               <div className="flex items-center space-x-2">
                 <Image
                   src={game.teams.home.logo}
@@ -53,9 +53,9 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
               </div>
             </TableCell>
 
-            <TableCell className="text-center">VS</TableCell>
+            <TableCell className="p-2 align-middle text-center">VS</TableCell>
 
-            <TableCell className="flex items-center justify-end space-x-2">
+            <TableCell className="p-2 align-middle">
               <div className="flex items-center space-x-2">
                 {!isMobile && <span>{game.teams.away.name}</span>}
                 <Image
