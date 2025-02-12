@@ -16,11 +16,11 @@ import {
 import { cn } from "@/lib/utils";
 import { Table } from "lucide-react";
 
-interface GridLists {
+interface ScoreGrid {
   filteredGames: NBAGame[];
 }
 
-const GridLists: FC<GridLists> = ({ filteredGames }) => {
+const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       {filteredGames.map((game) => (
@@ -208,4 +208,4 @@ const GridLists: FC<GridLists> = ({ filteredGames }) => {
   );
 };
 
-export default GridLists;
+export default ScoreGrid;

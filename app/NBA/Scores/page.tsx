@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { DatePickerDemo } from "@/components/DatePickerDemo";
 import ViewSelector from "@/components/ViewSelector";
 import ScoreLists from "@/components/pages/Scores/ScoreLists";
-import GridLists from "@/components/pages/Scores/GridLists";
+import ScoreGrid from "@/components/pages/Scores/ScoreGrid";
 
 const NBAStandings = () => {
   const { isMobile, isDesktop } = useDeviceType();
@@ -225,7 +225,7 @@ const NBAStandings = () => {
       </h1>
       {view === "list" && <ScoreLists filteredGames={nbaGames} />}
 
-      {view === "grid" && <GridLists filteredGames={filteredGames} />}
+      {view === "grid" && <ScoreGrid filteredGames={filteredGames} />}
     </div>
   );
 };
