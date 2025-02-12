@@ -10,6 +10,7 @@ import { DatePickerDemo } from "@/components/DatePickerDemo";
 import ViewSelector from "@/components/ViewSelector";
 import ScoreLists from "@/components/pages/Scores/ScoreLists";
 import ScoreGrid from "@/components/pages/Scores/ScoreGrid";
+import ScoreTable from "@/components/pages/Scores/ScoreTable";
 
 const NBAStandings = () => {
   const { isMobile, isDesktop } = useDeviceType();
@@ -223,9 +224,10 @@ const NBAStandings = () => {
         <div className="lg:mx-auto">NBA Games</div>
         <ViewSelector onViewChange={handleViewChange} />
       </h1>
-      {view === "list" && <ScoreLists filteredGames={nbaGames} />}
+      {view === "list" && <ScoreLists filteredGames={filteredGames} />}
 
       {view === "grid" && <ScoreGrid filteredGames={filteredGames} />}
+      {view === "table" && <ScoreTable filteredGames={filteredGames} />}
     </div>
   );
 };
