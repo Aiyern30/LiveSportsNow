@@ -1,3 +1,5 @@
+"use client";
+
 import type { FC } from "react";
 import { Skeleton } from "@/components/ui";
 import { useDeviceType } from "@/lib/useDevicesType";

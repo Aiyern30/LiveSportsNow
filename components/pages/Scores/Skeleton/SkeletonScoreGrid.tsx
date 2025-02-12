@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent, CardHeader, Skeleton } from "@/components/ui";
 import React, { FC } from "react";
 
