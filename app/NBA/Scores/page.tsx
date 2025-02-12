@@ -11,6 +11,7 @@ import ViewSelector from "@/components/ViewSelector";
 import ScoreLists from "@/components/pages/Scores/ScoreLists";
 import ScoreGrid from "@/components/pages/Scores/ScoreGrid";
 import ScoreTable from "@/components/pages/Scores/ScoreTable";
+import SkeletonScoreTable from "@/components/pages/Scores/Skeleton/SkeletonScoreTable";
 
 const NBAStandings = () => {
   const { isMobile, isDesktop } = useDeviceType();
@@ -90,7 +91,7 @@ const NBAStandings = () => {
           <div className="mx-auto">NBA Games</div>
           <ViewSelector onViewChange={handleViewChange} />
         </h1>
-        {view === "list" ? (
+        {view === "list" && (
           <div className="flex flex-col gap-4">
             {[...Array(6)].map((_, index) => (
               <div
@@ -167,8 +168,8 @@ const NBAStandings = () => {
               </div>
             ))}
           </div>
-        ) : (
-          // Existing grid loading skeleton
+        )}
+        {view === "grid" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {[...Array(6)].map((_, index) => (
               <Card key={index} className="p-4 shadow-lg">
@@ -192,6 +193,7 @@ const NBAStandings = () => {
             ))}
           </div>
         )}
+        {view === "table" && <SkeletonScoreTable rowCount={5} />}
       </div>
     );
   }
