@@ -12,7 +12,7 @@ interface SkeletonScoreTableProps {
   rowCount?: number;
 }
 
-const SkeletonScoreTable: FC<SkeletonScoreTableProps> = ({ rowCount = 5 }) => {
+const SkeletonScoreTable: FC<SkeletonScoreTableProps> = ({ rowCount }) => {
   return (
     <div className="w-full overflow-x-auto">
       <div className="w-full">
