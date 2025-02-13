@@ -13,8 +13,8 @@ interface ListsProps {
 
 const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
   const { isMobile, isDesktop } = useDeviceType();
-  const [nbaPlayer, setNbaPlayer] = useState<PlayerStats[]>([]);
-  console.log("nbaPlayer", nbaPlayer);
+  const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
+  const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -23,7 +23,25 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
       if (selectedGameId) {
         try {
           const data = await fetchNBAPlayerStatsByGameId(selectedGameId);
-          setNbaPlayer(data);
+
+          if (data.length > 0) {
+            // Get the team IDs from the selected game
+            const game = filteredGames.find(
+              (game) => game.id === selectedGameId
+            );
+            if (!game) return;
+
+            const homeTeamId = game.teams.home.id;
+            const awayTeamId = game.teams.away.id;
+
+            // Filter players by team
+            setHomePlayers(
+              data.filter((player) => player.team.id === homeTeamId)
+            );
+            setAwayPlayers(
+              data.filter((player) => player.team.id === awayTeamId)
+            );
+          }
         } catch (error) {
           console.error("Error fetching player stats:", error);
         }
@@ -32,7 +50,7 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
     if (dialogOpen) {
       getNBAPlayerStats();
     }
-  }, [dialogOpen, selectedGameId]);
+  }, [dialogOpen, selectedGameId, filteredGames]);
 
   const handleTopPlayersClick = (gameId: string) => {
     setSelectedGameId(gameId);
@@ -224,7 +242,8 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
         <ScoresDialog
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
-          nbaPlayer={nbaPlayer}
+          homePlayers={homePlayers}
+          awayPlayers={awayPlayers}
         />
       )}
     </div>

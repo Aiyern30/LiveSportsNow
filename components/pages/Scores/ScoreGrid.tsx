@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils";
 import ScoresDialog from "./ScoresDialog";
 import { PlayerStats } from "@/type/NBA/gamePlayer";
 import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
+import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
+import { TeamStatistics } from "@/type/NBA/gameTeams";
 
 interface ScoreGrid {
   filteredGames: NBAGame[];
@@ -28,7 +30,10 @@ interface ScoreGrid {
 
 const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [nbaPlayer, setNbaPlayer] = useState<PlayerStats[]>([]);
+  const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
+  const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
+  const [teamPlayer, setTeamPlayer] = useState<TeamStatistics[]>([]);
+  console.log("teamPlayer", teamPlayer);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -36,7 +41,35 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
       if (selectedGameId) {
         try {
           const data = await fetchNBAPlayerStatsByGameId(selectedGameId);
-          setNbaPlayer(data);
+
+          if (data.length > 0) {
+            // Get the team IDs from the selected game
+            const game = filteredGames.find(
+              (game) => game.id === selectedGameId
+            );
+            if (!game) return;
+
+            const homeTeamId = game.teams.home.id;
+            const awayTeamId = game.teams.away.id;
+
+            // Filter players by team
+            setHomePlayers(
+              data.filter((player) => player.team.id === homeTeamId)
+            );
+            setAwayPlayers(
+              data.filter((player) => player.team.id === awayTeamId)
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching player stats:", error);
+        }
+      }
+    };
+    const getNbaTeamStats = async () => {
+      if (selectedGameId) {
+        try {
+          const data = await fetchNBATeamStatsByGameId(selectedGameId);
+          setTeamPlayer(data);
         } catch (error) {
           console.error("Error fetching player stats:", error);
         }
@@ -44,8 +77,9 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
     };
     if (dialogOpen) {
       getNBAPlayerStats();
+      getNbaTeamStats();
     }
-  }, [dialogOpen, selectedGameId]);
+  }, [dialogOpen, selectedGameId, filteredGames]);
 
   const handleTopPlayersClick = (gameId: string) => {
     setSelectedGameId(gameId);
@@ -248,7 +282,8 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
         <ScoresDialog
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
-          nbaPlayer={nbaPlayer}
+          homePlayers={homePlayers}
+          awayPlayers={awayPlayers}
         />
       )}
     </div>
