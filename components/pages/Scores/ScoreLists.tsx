@@ -259,7 +259,7 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
               variant={"default"}
               onClick={() => handleTopPlayersClick(game.id)}
             >
-              Top Players
+              Teams Stats
             </Button>
           </div>
         </div>
