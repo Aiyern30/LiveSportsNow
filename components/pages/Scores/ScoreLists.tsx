@@ -111,8 +111,8 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
 
           {isDesktop && (
             <div className="flex items-center text-xs text-gray-700 space-x-5">
+              {/* Left: Q1 & Q2 */}
               <div className="flex flex-col space-y-1">
-                {/* Display quarter scores */}
                 <div className="flex space-x-2">
                   <span className="font-semibold">Q1:</span>
                   <span
@@ -135,19 +135,80 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
                     {game.scores.away.quarter_1}
                   </span>
                 </div>
-                {/* Repeat for other quarters */}
+                <div className="flex space-x-2">
+                  <span className="font-semibold">Q2:</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.home.quarter_2 > game.scores.away.quarter_2
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.home.quarter_2}
+                  </span>
+                  <span>-</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.away.quarter_2 > game.scores.home.quarter_2
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.away.quarter_2}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right: Q3 & Q4 */}
+              <div className="flex flex-col space-y-1">
+                <div className="flex space-x-2">
+                  <span className="font-semibold">Q3:</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.home.quarter_3 > game.scores.away.quarter_3
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.home.quarter_3}
+                  </span>
+                  <span>-</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.away.quarter_3 > game.scores.home.quarter_3
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.away.quarter_3}
+                  </span>
+                </div>
+                <div className="flex space-x-2">
+                  <span className="font-semibold">Q4:</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.home.quarter_4 > game.scores.away.quarter_4
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.home.quarter_4}
+                  </span>
+                  <span>-</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.away.quarter_4 > game.scores.home.quarter_4
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.away.quarter_4}
+                  </span>
+                </div>
               </div>
             </div>
           )}
 
-          <div className="text-xs text-gray-500 text-right w-32 ml-5">
-            <Button
-              variant={"default"}
-              onClick={() => handleTopPlayersClick(game.id)}
-            >
-              Top Players
-            </Button>
-          </div>
           <div className="text-xs text-gray-500 text-right w-32 ml-5">
             <Button
               variant={"default"}
