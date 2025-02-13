@@ -14,6 +14,7 @@ import SkeletonScoreTable from "@/components/pages/Scores/Skeleton/SkeletonScore
 import SkeletonScoreGrid from "@/components/pages/Scores/Skeleton/SkeletonScoreGrid";
 import SkeletonScoreLists from "@/components/pages/Scores/Skeleton/SkeletonScoreList";
 import { useSeason } from "@/lib/context/SeasonContext";
+import { ApiError } from "@/components/PlanError";
 
 const NBAStandings = () => {
   const { isMobile } = useDeviceType();
@@ -102,26 +103,10 @@ const NBAStandings = () => {
   }
 
   if (error) {
-    return (
-      <div className="text-center text-red-500 bg-red-100 border border-red-300 p-6 rounded-md my-6">
-        <h2 className="text-xl font-semibold">Error fetching NBA games</h2>
-        <p>{error}</p>
-        <div className="mt-4">
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-          >
-            Retry
-          </button>
-        </div>
-        <div className="mt-4">
-          <p className="text-sm text-gray-700">
-            If you&apos;re on a free plan, try selecting a season from 2021 to
-            2023.
-          </p>
-        </div>
-      </div>
-    );
+    const errorMessage =
+      "Free plans do not have access to this season, try from 2021 to 2023.";
+
+    return <ApiError message={errorMessage} />;
   }
 
   const filteredGames = nbaGames.filter(
