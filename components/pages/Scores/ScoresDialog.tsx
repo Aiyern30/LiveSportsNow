@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui";
 import { PlayerStats } from "@/type/NBA/gamePlayer";
+import { TeamStatistics } from "@/type/NBA/gameTeams";
 import React from "react";
 
 interface DialogProps {
@@ -21,6 +22,8 @@ interface DialogProps {
   setDialogOpen: (open: boolean) => void;
   homePlayers: PlayerStats[];
   awayPlayers: PlayerStats[];
+  homeTeamStats: TeamStatistics[];
+  awayTeamStats: TeamStatistics[];
 }
 
 const ScoresDialog = ({
@@ -28,6 +31,8 @@ const ScoresDialog = ({
   setDialogOpen,
   homePlayers,
   awayPlayers,
+  homeTeamStats,
+  awayTeamStats,
 }: DialogProps) => {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -89,6 +94,32 @@ const ScoresDialog = ({
                     <TableCell className="text-right">{player.type}</TableCell>
                   </TableRow>
                 ))}
+
+                {/* Team Stats Row */}
+                <TableRow className="bg-gray-200 font-bold">
+                  <TableCell className="text-left">Team Totals</TableCell>
+                  <TableCell className="text-right">-</TableCell>
+                  <TableCell className="text-right"></TableCell>
+                  <TableCell className="text-right">
+                    {homeTeamStats[0]?.assists || 0}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {homeTeamStats[0]?.rebounds.total || 0}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {homeTeamStats[0]?.field_goals.total || 0} /{" "}
+                    {homeTeamStats[0]?.field_goals.attempts || 0}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {homeTeamStats[0]?.threepoint_goals.total || 0} /{" "}
+                    {homeTeamStats[0]?.threepoint_goals.attempts || 0}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {homeTeamStats[0]?.freethrows_goals.total || 0} /{" "}
+                    {homeTeamStats[0]?.freethrows_goals.attempts || 0}
+                  </TableCell>
+                  <TableCell className="text-right">-</TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </div>
@@ -144,6 +175,31 @@ const ScoresDialog = ({
                     <TableCell className="text-right">{player.type}</TableCell>
                   </TableRow>
                 ))}
+                {/* Team Stats Row */}
+                <TableRow className="bg-gray-200 font-bold">
+                  <TableCell className="text-left">Team Totals</TableCell>
+                  <TableCell className="text-right">-</TableCell>
+                  <TableCell className="text-right"></TableCell>
+                  <TableCell className="text-right">
+                    {awayTeamStats[0]?.assists || 0}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {awayTeamStats[0]?.rebounds.total || 0}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {awayTeamStats[0]?.field_goals.total || 0} /{" "}
+                    {awayTeamStats[0]?.field_goals.attempts || 0}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {awayTeamStats[0]?.threepoint_goals.total || 0} /{" "}
+                    {awayTeamStats[0]?.threepoint_goals.attempts || 0}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {awayTeamStats[0]?.freethrows_goals.total || 0} /{" "}
+                    {awayTeamStats[0]?.freethrows_goals.attempts || 0}
+                  </TableCell>
+                  <TableCell className="text-right">-</TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </div>

@@ -6,6 +6,8 @@ import { Button } from "@/components/ui";
 import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
 import { PlayerStats } from "@/type/NBA/gamePlayer";
 import ScoresDialog from "./ScoresDialog";
+import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
+import { TeamStatistics } from "@/type/NBA/gameTeams";
 
 interface ListsProps {
   filteredGames: NBAGame[];
@@ -15,6 +17,8 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
   const { isMobile, isDesktop } = useDeviceType();
   const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
   const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
+  const [homeTeamStats, setHomeTeamStats] = useState<TeamStatistics[]>([]);
+  const [awayTeamStats, setAwayTeamStats] = useState<TeamStatistics[]>([]);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -47,8 +51,30 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
         }
       }
     };
+    const getNBATeamStats = async () => {
+      if (selectedGameId) {
+        try {
+          const data = await fetchNBATeamStatsByGameId(selectedGameId);
+          const game = filteredGames.find((game) => game.id === selectedGameId);
+          if (!game) return;
+
+          const homeTeamId = game.teams.home.id;
+          const awayTeamId = game.teams.away.id;
+
+          setHomeTeamStats(
+            data.filter((teamStat) => teamStat.team.id === homeTeamId)
+          );
+          setAwayTeamStats(
+            data.filter((teamStat) => teamStat.team.id === awayTeamId)
+          );
+        } catch (error) {
+          console.error("Error fetching team stats:", error);
+        }
+      }
+    };
     if (dialogOpen) {
       getNBAPlayerStats();
+      getNBATeamStats();
     }
   }, [dialogOpen, selectedGameId, filteredGames]);
 
@@ -244,6 +270,8 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
           setDialogOpen={setDialogOpen}
           homePlayers={homePlayers}
           awayPlayers={awayPlayers}
+          homeTeamStats={homeTeamStats}
+          awayTeamStats={awayTeamStats}
         />
       )}
     </div>

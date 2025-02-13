@@ -32,8 +32,8 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
   const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
-  const [teamPlayer, setTeamPlayer] = useState<TeamStatistics[]>([]);
-  console.log("teamPlayer", teamPlayer);
+  const [homeTeamStats, setHomeTeamStats] = useState<TeamStatistics[]>([]);
+  const [awayTeamStats, setAwayTeamStats] = useState<TeamStatistics[]>([]);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -65,19 +65,30 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
         }
       }
     };
-    const getNbaTeamStats = async () => {
+    const getNBATeamStats = async () => {
       if (selectedGameId) {
         try {
           const data = await fetchNBATeamStatsByGameId(selectedGameId);
-          setTeamPlayer(data);
+          const game = filteredGames.find((game) => game.id === selectedGameId);
+          if (!game) return;
+
+          const homeTeamId = game.teams.home.id;
+          const awayTeamId = game.teams.away.id;
+
+          setHomeTeamStats(
+            data.filter((teamStat) => teamStat.team.id === homeTeamId)
+          );
+          setAwayTeamStats(
+            data.filter((teamStat) => teamStat.team.id === awayTeamId)
+          );
         } catch (error) {
-          console.error("Error fetching player stats:", error);
+          console.error("Error fetching team stats:", error);
         }
       }
     };
     if (dialogOpen) {
       getNBAPlayerStats();
-      getNbaTeamStats();
+      getNBATeamStats();
     }
   }, [dialogOpen, selectedGameId, filteredGames]);
 
@@ -284,6 +295,8 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
           setDialogOpen={setDialogOpen}
           homePlayers={homePlayers}
           awayPlayers={awayPlayers}
+          homeTeamStats={homeTeamStats}
+          awayTeamStats={awayTeamStats}
         />
       )}
     </div>
