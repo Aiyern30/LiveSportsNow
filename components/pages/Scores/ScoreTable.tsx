@@ -210,7 +210,7 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
                     variant={"default"}
                     onClick={() => handleTopPlayersClick(game.id)}
                   >
-                    Top Players
+                    Teams Stats
                   </Button>
                 </TableCell>
               </TableRow>
