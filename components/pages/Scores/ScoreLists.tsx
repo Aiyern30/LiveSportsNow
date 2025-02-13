@@ -21,6 +21,7 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
   const [awayTeamStats, setAwayTeamStats] = useState<TeamStatistics[]>([]);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const selectedGame = filteredGames.find((game) => game.id === selectedGameId);
 
   useEffect(() => {
     const getNBAPlayerStats = async () => {
@@ -264,7 +265,7 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
         </div>
       ))}
 
-      {dialogOpen && (
+      {dialogOpen && selectedGame && (
         <ScoresDialog
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
@@ -272,6 +273,8 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
           awayPlayers={awayPlayers}
           homeTeamStats={homeTeamStats}
           awayTeamStats={awayTeamStats}
+          homeScore={selectedGame?.scores.home.total ?? 0}
+          awayScore={selectedGame?.scores.away.total ?? 0}
         />
       )}
     </div>

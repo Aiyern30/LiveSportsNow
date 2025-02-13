@@ -24,6 +24,8 @@ interface DialogProps {
   awayPlayers: PlayerStats[];
   homeTeamStats: TeamStatistics[];
   awayTeamStats: TeamStatistics[];
+  homeScore: number;
+  awayScore: number;
 }
 
 const ScoresDialog = ({
@@ -33,6 +35,8 @@ const ScoresDialog = ({
   awayPlayers,
   homeTeamStats,
   awayTeamStats,
+  homeScore,
+  awayScore,
 }: DialogProps) => {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -99,7 +103,7 @@ const ScoresDialog = ({
                 <TableRow className="bg-gray-200 font-bold">
                   <TableCell className="text-left">Team Totals</TableCell>
                   <TableCell className="text-right">-</TableCell>
-                  <TableCell className="text-right"></TableCell>
+                  <TableCell className="text-right">{homeScore}</TableCell>
                   <TableCell className="text-right">
                     {homeTeamStats[0]?.assists || 0}
                   </TableCell>
@@ -179,7 +183,7 @@ const ScoresDialog = ({
                 <TableRow className="bg-gray-200 font-bold">
                   <TableCell className="text-left">Team Totals</TableCell>
                   <TableCell className="text-right">-</TableCell>
-                  <TableCell className="text-right"></TableCell>
+                  <TableCell className="text-right">{awayScore}</TableCell>
                   <TableCell className="text-right">
                     {awayTeamStats[0]?.assists || 0}
                   </TableCell>

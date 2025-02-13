@@ -30,11 +30,13 @@ interface ScoreGrid {
 
 const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+
   const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
   const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
   const [homeTeamStats, setHomeTeamStats] = useState<TeamStatistics[]>([]);
   const [awayTeamStats, setAwayTeamStats] = useState<TeamStatistics[]>([]);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
+  const selectedGame = filteredGames.find((game) => game.id === selectedGameId);
 
   useEffect(() => {
     const getNBAPlayerStats = async () => {
@@ -289,7 +291,7 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
         </Card>
       ))}
 
-      {dialogOpen && (
+      {dialogOpen && selectedGame && (
         <ScoresDialog
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
@@ -297,6 +299,8 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
           awayPlayers={awayPlayers}
           homeTeamStats={homeTeamStats}
           awayTeamStats={awayTeamStats}
+          homeScore={selectedGame?.scores.home.total ?? 0}
+          awayScore={selectedGame?.scores.away.total ?? 0}
         />
       )}
     </div>
