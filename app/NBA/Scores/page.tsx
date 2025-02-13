@@ -13,9 +13,11 @@ import ScoreTable from "@/components/pages/Scores/ScoreTable";
 import SkeletonScoreTable from "@/components/pages/Scores/Skeleton/SkeletonScoreTable";
 import SkeletonScoreGrid from "@/components/pages/Scores/Skeleton/SkeletonScoreGrid";
 import SkeletonScoreLists from "@/components/pages/Scores/Skeleton/SkeletonScoreList";
+import { useSeason } from "@/lib/context/SeasonContext";
 
 const NBAStandings = () => {
   const { isMobile } = useDeviceType();
+  const { selectedSeason } = useSeason();
   const [view, setView] = useState("list");
 
   useEffect(() => {
@@ -29,8 +31,8 @@ const NBAStandings = () => {
     setView(newView);
     localStorage.setItem("viewPreference", newView);
   };
+
   const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
-  console.log("nbaGames", nbaGames);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -39,7 +41,7 @@ const NBAStandings = () => {
   useEffect(() => {
     const getNBAGames = async () => {
       try {
-        const data = await fetchNBAGames();
+        const data = await fetchNBAGames(selectedSeason);
         setNbaGames(data);
 
         // Extract available dates from fetched games
@@ -69,7 +71,7 @@ const NBAStandings = () => {
     };
 
     getNBAGames();
-  }, []);
+  }, [selectedSeason]);
 
   if (loading) {
     return (
@@ -99,7 +101,28 @@ const NBAStandings = () => {
     );
   }
 
-  if (error) return <div className="text-center text-red-500">{error}</div>;
+  if (error) {
+    return (
+      <div className="text-center text-red-500 bg-red-100 border border-red-300 p-6 rounded-md my-6">
+        <h2 className="text-xl font-semibold">Error fetching NBA games</h2>
+        <p>{error}</p>
+        <div className="mt-4">
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+          >
+            Retry
+          </button>
+        </div>
+        <div className="mt-4">
+          <p className="text-sm text-gray-700">
+            If you&apos;re on a free plan, try selecting a season from 2021 to
+            2023.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const filteredGames = nbaGames.filter(
     (game) =>
@@ -128,7 +151,6 @@ const NBAStandings = () => {
         <ViewSelector onViewChange={handleViewChange} />
       </h1>
       {view === "list" && <ScoreLists filteredGames={filteredGames} />}
-
       {view === "grid" && <ScoreGrid filteredGames={filteredGames} />}
       {view === "table" && <ScoreTable filteredGames={filteredGames} />}
     </div>
