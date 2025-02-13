@@ -23,20 +23,16 @@ export const fetchNBAGames = async (season: string): Promise<NBAGame[]> => {
 
     const data = await response.json();
 
-    // Handle errors in the API response
     if (data.errors && data.errors.plan) {
-      throw new Error(data.errors.plan);
+      throw new Error(data.errors.plan); 
     }
 
     if (!data.response || !Array.isArray(data.response)) {
       throw new Error("Invalid response structure");
     }
 
-    console.log(`Fetched NBA Games for ${season}:`, data.response);
-
     return data.response as NBAGame[];
   } catch (error) {
-    console.error(`Failed to fetch NBA games for ${season}`, error);
-    throw new Error("Failed to fetch NBA games");
+    throw new Error(error instanceof Error ? error.message : "Failed to fetch NBA games");
   }
 };

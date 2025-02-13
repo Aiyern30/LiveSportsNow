@@ -1,4 +1,5 @@
 "use client";
+
 import { useDeviceType } from "@/lib/useDevicesType";
 import { fetchNBAGames } from "@/utils/NBA/fetchNBAGames";
 import { useEffect, useState } from "react";
@@ -62,7 +63,7 @@ const NBAStandings = () => {
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
-          setError(`Failed to fetch NBA games: ${error.message}`);
+          setError(error.message);
         } else {
           setError("An unknown error occurred while fetching NBA games.");
         }
@@ -103,10 +104,7 @@ const NBAStandings = () => {
   }
 
   if (error) {
-    const errorMessage =
-      "Free plans do not have access to this season, try from 2021 to 2023.";
-
-    return <ApiError message={errorMessage} />;
+    return <ApiError message={error} />;
   }
 
   const filteredGames = nbaGames.filter(
