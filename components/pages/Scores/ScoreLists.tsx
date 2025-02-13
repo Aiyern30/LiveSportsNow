@@ -148,6 +148,14 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
               Top Players
             </Button>
           </div>
+          <div className="text-xs text-gray-500 text-right w-32 ml-5">
+            <Button
+              variant={"default"}
+              onClick={() => handleTopPlayersClick(game.id)}
+            >
+              Top Players
+            </Button>
+          </div>
         </div>
       ))}
 
