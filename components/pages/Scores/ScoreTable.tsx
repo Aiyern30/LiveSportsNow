@@ -1,6 +1,6 @@
 "use client";
 
-import type { FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import Image from "next/image";
 import type { NBAGame } from "@/type/NBA/game";
 import { useDeviceType } from "@/lib/useDevicesType";
@@ -12,7 +12,11 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  Button,
 } from "@/components/ui";
+import { PlayerStats } from "@/type/NBA/gamePlayer";
+import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
+import ScoresDialog from "./ScoresDialog";
 
 interface TableProps {
   filteredGames: NBAGame[];
@@ -20,6 +24,30 @@ interface TableProps {
 
 const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
   const { isMobile } = useDeviceType();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [nbaPlayer, setNbaPlayer] = useState<PlayerStats[]>([]);
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getNBAPlayerStats = async () => {
+      if (selectedGameId) {
+        try {
+          const data = await fetchNBAPlayerStatsByGameId(selectedGameId);
+          setNbaPlayer(data);
+        } catch (error) {
+          console.error("Error fetching player stats:", error);
+        }
+      }
+    };
+    if (dialogOpen) {
+      getNBAPlayerStats();
+    }
+  }, [dialogOpen, selectedGameId]);
+
+  const handleTopPlayersClick = (gameId: string) => {
+    setSelectedGameId(gameId);
+    setDialogOpen(true);
+  };
 
   return (
     <div className="w-full overflow-x-auto">
@@ -48,6 +76,9 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
               </TableHead>
               <TableHead className="border border-gray-300 sm:table-cell text-center w-16">
                 Q4
+              </TableHead>
+              <TableHead className="border border-gray-300 sm:table-cell text-center">
+                Action
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -128,10 +159,25 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
                 <TableCell className="border border-gray-300">
                   {game.scores.home.quarter_4} - {game.scores.away.quarter_4}
                 </TableCell>
+                <TableCell className="border border-gray-300 text-center">
+                  <Button
+                    variant={"default"}
+                    onClick={() => handleTopPlayersClick(game.id)}
+                  >
+                    Top Players
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+        {dialogOpen && (
+          <ScoresDialog
+            dialogOpen={dialogOpen}
+            setDialogOpen={setDialogOpen}
+            nbaPlayer={nbaPlayer}
+          />
+        )}
       </div>
     </div>
   );

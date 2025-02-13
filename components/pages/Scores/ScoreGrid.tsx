@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import { NBAGame } from "@/type/NBA/game";
 import {
@@ -15,14 +15,43 @@ import {
   TableBody,
   TableCell,
   CardFooter,
+  Button,
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import ScoresDialog from "./ScoresDialog";
+import { PlayerStats } from "@/type/NBA/gamePlayer";
+import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
 
 interface ScoreGrid {
   filteredGames: NBAGame[];
 }
 
 const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [nbaPlayer, setNbaPlayer] = useState<PlayerStats[]>([]);
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getNBAPlayerStats = async () => {
+      if (selectedGameId) {
+        try {
+          const data = await fetchNBAPlayerStatsByGameId(selectedGameId);
+          setNbaPlayer(data);
+        } catch (error) {
+          console.error("Error fetching player stats:", error);
+        }
+      }
+    };
+    if (dialogOpen) {
+      getNBAPlayerStats();
+    }
+  }, [dialogOpen, selectedGameId]);
+
+  const handleTopPlayersClick = (gameId: string) => {
+    setSelectedGameId(gameId);
+    setDialogOpen(true);
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       {filteredGames.map((game) => (
@@ -203,9 +232,25 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
               />
               {game.country.name}
             </p>
+            <div className="text-xs text-gray-500 text-right w-32 ml-5">
+              <Button
+                variant={"default"}
+                onClick={() => handleTopPlayersClick(game.id)}
+              >
+                Top Players
+              </Button>
+            </div>
           </CardFooter>
         </Card>
       ))}
+
+      {dialogOpen && (
+        <ScoresDialog
+          dialogOpen={dialogOpen}
+          setDialogOpen={setDialogOpen}
+          nbaPlayer={nbaPlayer}
+        />
+      )}
     </div>
   );
 };
