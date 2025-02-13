@@ -41,7 +41,7 @@ const TopHeader = () => {
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Select value={selectedSeason} onValueChange={handleSeasonChange}>
-          <SelectTrigger className="w-[280px]">
+          <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Select a season" />
           </SelectTrigger>
           <SelectContent>
