@@ -17,6 +17,8 @@ import {
 import { PlayerStats } from "@/type/NBA/gamePlayer";
 import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
 import ScoresDialog from "./ScoresDialog";
+import { TeamStatistics } from "@/type/NBA/gameTeams";
+import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
 
 interface TableProps {
   filteredGames: NBAGame[];
@@ -25,24 +27,68 @@ interface TableProps {
 const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
   const { isMobile } = useDeviceType();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [nbaPlayer, setNbaPlayer] = useState<PlayerStats[]>([]);
+  const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
+  const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
+  const [homeTeamStats, setHomeTeamStats] = useState<TeamStatistics[]>([]);
+  const [awayTeamStats, setAwayTeamStats] = useState<TeamStatistics[]>([]);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
+  const selectedGame = filteredGames.find((game) => game.id === selectedGameId);
 
   useEffect(() => {
     const getNBAPlayerStats = async () => {
       if (selectedGameId) {
         try {
           const data = await fetchNBAPlayerStatsByGameId(selectedGameId);
-          setNbaPlayer(data);
+
+          if (data.length > 0) {
+            // Get the team IDs from the selected game
+            const game = filteredGames.find(
+              (game) => game.id === selectedGameId
+            );
+            if (!game) return;
+
+            const homeTeamId = game.teams.home.id;
+            const awayTeamId = game.teams.away.id;
+
+            // Filter players by team
+            setHomePlayers(
+              data.filter((player) => player.team.id === homeTeamId)
+            );
+            setAwayPlayers(
+              data.filter((player) => player.team.id === awayTeamId)
+            );
+          }
         } catch (error) {
           console.error("Error fetching player stats:", error);
         }
       }
     };
+    const getNBATeamStats = async () => {
+      if (selectedGameId) {
+        try {
+          const data = await fetchNBATeamStatsByGameId(selectedGameId);
+          const game = filteredGames.find((game) => game.id === selectedGameId);
+          if (!game) return;
+
+          const homeTeamId = game.teams.home.id;
+          const awayTeamId = game.teams.away.id;
+
+          setHomeTeamStats(
+            data.filter((teamStat) => teamStat.team.id === homeTeamId)
+          );
+          setAwayTeamStats(
+            data.filter((teamStat) => teamStat.team.id === awayTeamId)
+          );
+        } catch (error) {
+          console.error("Error fetching team stats:", error);
+        }
+      }
+    };
     if (dialogOpen) {
       getNBAPlayerStats();
+      getNBATeamStats();
     }
-  }, [dialogOpen, selectedGameId]);
+  }, [dialogOpen, selectedGameId, filteredGames]);
 
   const handleTopPlayersClick = (gameId: string) => {
     setSelectedGameId(gameId);
@@ -171,11 +217,16 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
             ))}
           </TableBody>
         </Table>
-        {dialogOpen && (
+        {dialogOpen && selectedGame && (
           <ScoresDialog
             dialogOpen={dialogOpen}
             setDialogOpen={setDialogOpen}
-            nbaPlayer={nbaPlayer}
+            homePlayers={homePlayers}
+            awayPlayers={awayPlayers}
+            homeTeamStats={homeTeamStats}
+            awayTeamStats={awayTeamStats}
+            homeScore={selectedGame?.scores.home.total ?? 0}
+            awayScore={selectedGame?.scores.away.total ?? 0}
           />
         )}
       </div>

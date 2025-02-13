@@ -6,6 +6,8 @@ import { Button } from "@/components/ui";
 import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
 import { PlayerStats } from "@/type/NBA/gamePlayer";
 import ScoresDialog from "./ScoresDialog";
+import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
+import { TeamStatistics } from "@/type/NBA/gameTeams";
 
 interface ListsProps {
   filteredGames: NBAGame[];
@@ -13,26 +15,69 @@ interface ListsProps {
 
 const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
   const { isMobile, isDesktop } = useDeviceType();
-  const [nbaPlayer, setNbaPlayer] = useState<PlayerStats[]>([]);
-  console.log("nbaPlayer", nbaPlayer);
+  const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
+  const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
+  const [homeTeamStats, setHomeTeamStats] = useState<TeamStatistics[]>([]);
+  const [awayTeamStats, setAwayTeamStats] = useState<TeamStatistics[]>([]);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const selectedGame = filteredGames.find((game) => game.id === selectedGameId);
 
   useEffect(() => {
     const getNBAPlayerStats = async () => {
       if (selectedGameId) {
         try {
           const data = await fetchNBAPlayerStatsByGameId(selectedGameId);
-          setNbaPlayer(data);
+
+          if (data.length > 0) {
+            // Get the team IDs from the selected game
+            const game = filteredGames.find(
+              (game) => game.id === selectedGameId
+            );
+            if (!game) return;
+
+            const homeTeamId = game.teams.home.id;
+            const awayTeamId = game.teams.away.id;
+
+            // Filter players by team
+            setHomePlayers(
+              data.filter((player) => player.team.id === homeTeamId)
+            );
+            setAwayPlayers(
+              data.filter((player) => player.team.id === awayTeamId)
+            );
+          }
         } catch (error) {
           console.error("Error fetching player stats:", error);
         }
       }
     };
+    const getNBATeamStats = async () => {
+      if (selectedGameId) {
+        try {
+          const data = await fetchNBATeamStatsByGameId(selectedGameId);
+          const game = filteredGames.find((game) => game.id === selectedGameId);
+          if (!game) return;
+
+          const homeTeamId = game.teams.home.id;
+          const awayTeamId = game.teams.away.id;
+
+          setHomeTeamStats(
+            data.filter((teamStat) => teamStat.team.id === homeTeamId)
+          );
+          setAwayTeamStats(
+            data.filter((teamStat) => teamStat.team.id === awayTeamId)
+          );
+        } catch (error) {
+          console.error("Error fetching team stats:", error);
+        }
+      }
+    };
     if (dialogOpen) {
       getNBAPlayerStats();
+      getNBATeamStats();
     }
-  }, [dialogOpen, selectedGameId]);
+  }, [dialogOpen, selectedGameId, filteredGames]);
 
   const handleTopPlayersClick = (gameId: string) => {
     setSelectedGameId(gameId);
@@ -111,8 +156,8 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
 
           {isDesktop && (
             <div className="flex items-center text-xs text-gray-700 space-x-5">
+              {/* Left: Q1 & Q2 */}
               <div className="flex flex-col space-y-1">
-                {/* Display quarter scores */}
                 <div className="flex space-x-2">
                   <span className="font-semibold">Q1:</span>
                   <span
@@ -135,7 +180,76 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
                     {game.scores.away.quarter_1}
                   </span>
                 </div>
-                {/* Repeat for other quarters */}
+                <div className="flex space-x-2">
+                  <span className="font-semibold">Q2:</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.home.quarter_2 > game.scores.away.quarter_2
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.home.quarter_2}
+                  </span>
+                  <span>-</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.away.quarter_2 > game.scores.home.quarter_2
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.away.quarter_2}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right: Q3 & Q4 */}
+              <div className="flex flex-col space-y-1">
+                <div className="flex space-x-2">
+                  <span className="font-semibold">Q3:</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.home.quarter_3 > game.scores.away.quarter_3
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.home.quarter_3}
+                  </span>
+                  <span>-</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.away.quarter_3 > game.scores.home.quarter_3
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.away.quarter_3}
+                  </span>
+                </div>
+                <div className="flex space-x-2">
+                  <span className="font-semibold">Q4:</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.home.quarter_4 > game.scores.away.quarter_4
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.home.quarter_4}
+                  </span>
+                  <span>-</span>
+                  <span
+                    className={`font-semibold ${
+                      game.scores.away.quarter_4 > game.scores.home.quarter_4
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {game.scores.away.quarter_4}
+                  </span>
+                </div>
               </div>
             </div>
           )}
@@ -148,22 +262,19 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
               Top Players
             </Button>
           </div>
-          <div className="text-xs text-gray-500 text-right w-32 ml-5">
-            <Button
-              variant={"default"}
-              onClick={() => handleTopPlayersClick(game.id)}
-            >
-              Top Players
-            </Button>
-          </div>
         </div>
       ))}
 
-      {dialogOpen && (
+      {dialogOpen && selectedGame && (
         <ScoresDialog
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
-          nbaPlayer={nbaPlayer}
+          homePlayers={homePlayers}
+          awayPlayers={awayPlayers}
+          homeTeamStats={homeTeamStats}
+          awayTeamStats={awayTeamStats}
+          homeScore={selectedGame?.scores.home.total ?? 0}
+          awayScore={selectedGame?.scores.away.total ?? 0}
         />
       )}
     </div>

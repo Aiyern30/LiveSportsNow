@@ -1,4 +1,3 @@
-// TypeScript types based on the sample response
 
 interface FieldGoals {
     total: number;
