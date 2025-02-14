@@ -19,12 +19,15 @@ import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGa
 import ScoresDialog from "./ScoresDialog";
 import { TeamStatistics } from "@/type/NBA/gameTeams";
 import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
+import { useRouter } from "next/navigation";
 
 interface TableProps {
   filteredGames: NBAGame[];
 }
 
 const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
+  const router = useRouter();
+
   const { isMobile } = useDeviceType();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
@@ -137,7 +140,14 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
                 className="border-b border-gray-300 hover:bg-gray-50"
               >
                 {/* Home Team */}
-                <TableCell className="border border-gray-300 p-3">
+                <TableCell
+                  className="border border-gray-300 p-3 hover:underline cursor-pointer"
+                  onClick={() =>
+                    router.push(
+                      `/Teams?${game.teams.home.id}+name=${game.teams.home.name}`
+                    )
+                  }
+                >
                   <div className="flex items-center space-x-2">
                     <Image
                       src={
@@ -154,7 +164,14 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
                 </TableCell>
 
                 {/* Away Team */}
-                <TableCell className="border border-gray-300 p-3">
+                <TableCell
+                  className="border border-gray-300 p-3 hover:underline cursor-pointer"
+                  onClick={() =>
+                    router.push(
+                      `/Teams?${game.teams.away.id}+name=${game.teams.away.name}`
+                    )
+                  }
+                >
                   <div className="flex items-center space-x-2">
                     {!isMobile && <span>{game.teams.away.name}</span>}
                     <Image
