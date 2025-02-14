@@ -16,32 +16,16 @@ import {
   // SidebarRail,
 } from "./ui";
 import { NavMain } from "./nav-main";
+import { LogoSidebar } from "./LogoSidebar";
 // import { NavProjects } from "./nav-projects";
 // import { NavUser } from "./nav-user";
-// import { TeamSwitcher } from "./team-switcher";
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "https://avatars.githubusercontent.com/u/30559529",
   },
-  // teams: [
-  //   {
-  //     name: "Acme Inc",
-  //     logo: GalleryVerticalEnd,
-  //     plan: "Enterprise",
-  //   },
-  //   {
-  //     name: "Acme Corp.",
-  //     logo: AudioWaveform,
-  //     plan: "Startup",
-  //   },
-  //   {
-  //     name: "Evil Corp.",
-  //     logo: Command,
-  //     plan: "Free",
-  //   },
-  // ],
+
   navMain: [
     {
       title: "NBA",
@@ -191,7 +175,9 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>{/* <TeamSwitcher teams={data.teams} /> */}</SidebarHeader>
+      <SidebarHeader>
+        <LogoSidebar />
+      </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         {/* <NavProjects projects={data.projects} /> */}
