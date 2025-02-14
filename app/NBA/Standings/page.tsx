@@ -10,6 +10,7 @@ const Standings = () => {
   const { selectedSeason } = useSeason();
   const [standings, setStandings] = useState<Standing[][]>([]);
   const [selectedGroup, setSelectedGroup] = useState("Western Conference");
+  const [selectedCategory, setSelectedCategory] = useState("Conference"); // Track which main tab is active
 
   useEffect(() => {
     if (selectedSeason) {
@@ -19,13 +20,16 @@ const Standings = () => {
     }
   }, [selectedSeason]);
 
-  const getFilteredStandings = (category: string) => {
+  // Handle switching between Conference and Division tabs
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setSelectedGroup(
+      category === "Conference" ? "Western Conference" : "Central"
+    ); // Reset to default for each category
+  };
+
+  const getFilteredStandings = () => {
     if (standings.length === 0) return [];
-
-    if (category === "League") {
-      return standings[0].slice().sort((a, b) => a.position - b.position);
-    }
-
     return standings[0].filter((team) => team.group.name === selectedGroup);
   };
 
@@ -33,15 +37,23 @@ const Standings = () => {
     <div>
       <h1>NBA Standings ({selectedSeason})</h1>
 
-      <Tabs defaultValue="League" className="w-full">
+      {/* Main category selection */}
+      <Tabs
+        defaultValue="Conference"
+        value={selectedCategory}
+        onValueChange={handleCategoryChange}
+        className="w-full"
+      >
         <TabsList>
           <TabsTrigger value="Conference">Conference</TabsTrigger>
           <TabsTrigger value="Division">Division</TabsTrigger>
         </TabsList>
 
+        {/* Conference Standings */}
         <TabsContent value="Conference">
           <Tabs
-            defaultValue={selectedGroup}
+            defaultValue="Western Conference"
+            value={selectedGroup}
             onValueChange={setSelectedGroup}
             className="w-[400px]"
           >
@@ -52,7 +64,7 @@ const Standings = () => {
           </Tabs>
 
           <ul>
-            {getFilteredStandings("Conference").map((team, index) => (
+            {getFilteredStandings().map((team, index) => (
               <li key={index}>
                 {team.team.name} - Position: {team.position}
               </li>
@@ -60,9 +72,11 @@ const Standings = () => {
           </ul>
         </TabsContent>
 
+        {/* Division Standings */}
         <TabsContent value="Division">
           <Tabs
-            defaultValue={selectedGroup}
+            defaultValue="Central"
+            value={selectedGroup}
             onValueChange={setSelectedGroup}
             className="w-[400px]"
           >
@@ -74,7 +88,7 @@ const Standings = () => {
           </Tabs>
 
           <ul>
-            {getFilteredStandings("Division").map((team, index) => (
+            {getFilteredStandings().map((team, index) => (
               <li key={index}>
                 {team.team.name} - Position: {team.position}
               </li>
