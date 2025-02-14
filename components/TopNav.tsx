@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,22 +10,45 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  NavigationMenuViewport,
   navigationMenuTriggerStyle,
+  NavigationMenuViewport,
 } from "@/components/ui";
-import { teams } from "./json/page";
 import Image from "next/image";
 import { useDeviceType } from "@/lib/useDevicesType";
+import { fetchNBAGroups } from "@/utils/NBA/fetchNBAGroup";
+import { NBAGroup } from "@/type/NBA/groups";
+import { useSeason } from "@/lib/context/SeasonContext";
 
 const TopNav = () => {
+  const { selectedSeason } = useSeason();
   const pathname = usePathname();
   const { isMobile } = useDeviceType();
+  const [teams, setTeams] = useState<NBAGroup[]>([]);
+  const router = useRouter(); // Add router to navigate programmatically
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const data = await fetchNBAGroups(selectedSeason);
+        setTeams(data);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      }
+    };
+
+    fetchTeams();
+  }, [selectedSeason]);
 
   const isActive = (path: string) => {
     if (path === "/") {
       return pathname === "/";
     }
     return pathname.startsWith(path);
+  };
+
+  // On team click, navigate to /NBA/Teams/[id]
+  const handleTeamClick = (id: string) => {
+    router.push(`/NBA/Teams/${id}`);
   };
 
   return (
@@ -111,9 +134,7 @@ const TopNav = () => {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger
-                    className={navigationMenuTriggerStyle()}
-                  >
+                  <NavigationMenuTrigger className="navigationMenuTriggerStyle">
                     Teams
                   </NavigationMenuTrigger>
                   <div
@@ -123,30 +144,23 @@ const TopNav = () => {
                   ></div>
                   <NavigationMenuContent className="max-h-96 overflow-y-auto">
                     <ul className="grid w-full gap-4 p-4 md:w-[500px] md:grid-cols-2 lg:w-[800px] lg:grid-cols-3 xl:w-[1000px] xl:grid-cols-3">
-                      {teams.map((division) => (
-                        <div key={division.division}>
-                          <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-                            {division.division}
-                          </h2>
-                          {division.teams.map((team) => (
-                            <Link
-                              key={team.name}
-                              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-                              href={`/NBA/Teams/${team.name}`}
-                            >
-                              <Image
-                                src={team.logo}
-                                alt={team.name}
-                                width={48}
-                                height={48}
-                                className="rounded-full"
-                              />
-                              <span className="text-lg font-medium text-gray-700">
-                                {team.name}
-                              </span>
-                            </Link>
-                          ))}
-                        </div>
+                      {teams.map((team) => (
+                        <li
+                          key={team.id}
+                          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                          onClick={() => handleTeamClick(team.id.toString())}
+                        >
+                          <Image
+                            src={team.logo}
+                            alt={team.name}
+                            width={48}
+                            height={48}
+                            className="rounded-full"
+                          />
+                          <span className="text-lg font-medium text-gray-700">
+                            {team.name}
+                          </span>
+                        </li>
                       ))}
                     </ul>
                   </NavigationMenuContent>
