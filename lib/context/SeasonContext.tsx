@@ -1,6 +1,5 @@
 "use client";
-
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { fetchSeasons } from "@/utils/Seasons/fetchSeasons";
 
 const DEFAULT_SEASON = "2023-2024";
@@ -9,6 +8,7 @@ interface SeasonContextType {
   seasons: string[];
   selectedSeason: string;
   setSelectedSeason: (season: string) => void;
+  isApiError: boolean;
 }
 
 const SeasonContext = createContext<SeasonContextType | undefined>(undefined);
@@ -18,14 +18,24 @@ export const SeasonProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [seasons, setSeasons] = useState<string[]>([]);
   const [selectedSeason, setSelectedSeason] = useState<string>(DEFAULT_SEASON);
+  const [isApiError, setIsApiError] = useState<boolean>(false);
 
   useEffect(() => {
     const getSeasons = async () => {
-      const fetchedSeasons = await fetchSeasons();
-      setSeasons(fetchedSeasons);
+      try {
+        const fetchedSeasons = await fetchSeasons();
+        setSeasons(fetchedSeasons);
 
-      const savedSeason = localStorage.getItem("selectedSeason");
-      setSelectedSeason(savedSeason || DEFAULT_SEASON);
+        const savedSeason = localStorage.getItem("selectedSeason");
+        setSelectedSeason(savedSeason || DEFAULT_SEASON);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setIsApiError(true);
+          console.log("Error occurred:", error.message); // Log the error message
+        } else {
+          setIsApiError(true);
+        }
+      }
     };
 
     getSeasons();
@@ -37,7 +47,7 @@ export const SeasonProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <SeasonContext.Provider
-      value={{ seasons, selectedSeason, setSelectedSeason }}
+      value={{ seasons, selectedSeason, setSelectedSeason, isApiError }}
     >
       {children}
     </SeasonContext.Provider>

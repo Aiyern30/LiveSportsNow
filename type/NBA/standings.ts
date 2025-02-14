@@ -54,14 +54,4 @@ export type Team = {
     description: string;
   };
   
-  export type ApiResponse = {
-    get: string;
-    parameters: {
-      league: string;
-      season: string;
-    };
-    errors: string[];
-    results: number;
-    response: Standing[][];
-  };
   

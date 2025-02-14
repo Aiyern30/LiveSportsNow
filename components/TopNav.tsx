@@ -24,7 +24,7 @@ const TopNav = () => {
   const pathname = usePathname();
   const { isMobile } = useDeviceType();
   const [teams, setTeams] = useState<NBAGroup[]>([]);
-  const router = useRouter(); // Add router to navigate programmatically
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -32,7 +32,7 @@ const TopNav = () => {
         const data = await fetchNBAGroups(selectedSeason);
         setTeams(data);
       } catch (error) {
-        console.error("Error fetching teams:", error);
+        console.log("Error fetching teams:", error);
       }
     };
 

@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/";
 import { useRouter } from "next/navigation";
+import { ApiError } from "@/components/PlanError";
 
 const Standings = () => {
   const router = useRouter();
@@ -27,22 +28,28 @@ const Standings = () => {
   const { selectedSeason } = useSeason();
   const [standings, setStandings] = useState<Standing[][]>([]);
   const [selectedGroup, setSelectedGroup] = useState("Western Conference");
-  const [selectedCategory, setSelectedCategory] = useState("Conference"); // Track which main tab is active
+  const [selectedCategory, setSelectedCategory] = useState("Conference");
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     if (selectedSeason) {
       fetchNBAStandings(selectedSeason)
         .then(setStandings)
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          setError(
+            error instanceof Error
+              ? error.message
+              : "Failed to fetch standings."
+          );
+        });
     }
   }, [selectedSeason]);
 
-  // Handle switching between Conference and Division tabs
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     setSelectedGroup(
       category === "Conference" ? "Western Conference" : "Central"
-    ); // Reset to default for each category
+    );
   };
 
   const getFilteredStandings = () => {
@@ -50,13 +57,16 @@ const Standings = () => {
     return standings[0].filter((team) => team.group.name === selectedGroup);
   };
 
+  if (error) {
+    return <ApiError message={error} />;
+  }
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">
         NBA Standings ({selectedSeason})
       </h1>
 
-      {/* Main category selection */}
       <Tabs
         defaultValue="Conference"
         value={selectedCategory}
@@ -68,7 +78,6 @@ const Standings = () => {
           <TabsTrigger value="Division">Division</TabsTrigger>
         </TabsList>
 
-        {/* Conference Standings */}
         <TabsContent value="Conference">
           <Tabs
             defaultValue="Western Conference"
@@ -113,7 +122,7 @@ const Standings = () => {
                           src={team.team.logo}
                           alt={team.team.name}
                           layout="fill"
-                          objectFit="cover" // Ensures the image covers the container without distortion
+                          objectFit="cover"
                           className="rounded-full"
                         />
                       </div>
@@ -134,7 +143,6 @@ const Standings = () => {
           </Table>
         </TabsContent>
 
-        {/* Division Standings */}
         <TabsContent value="Division">
           <Tabs
             defaultValue="Central"
@@ -154,7 +162,6 @@ const Standings = () => {
             </TabsList>
           </Tabs>
 
-          {/* Table */}
           <Table className="border border-gray-200">
             <TableHeader>
               <TableRow className="bg-gray-100">

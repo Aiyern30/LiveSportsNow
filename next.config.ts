@@ -16,6 +16,16 @@ const nextConfig = {
       },
     ],
   },
+
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/NBA",
+        permanent: true, 
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

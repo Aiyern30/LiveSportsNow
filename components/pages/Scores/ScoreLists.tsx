@@ -51,7 +51,7 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
             );
           }
         } catch (error) {
-          console.error("Error fetching player stats:", error);
+          console.log("Error fetching player stats:", error);
         }
       }
     };
@@ -72,7 +72,7 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
             data.filter((teamStat) => teamStat.team.id === awayTeamId)
           );
         } catch (error) {
-          console.error("Error fetching team stats:", error);
+          console.log("Error fetching team stats:", error);
         }
       }
     };
