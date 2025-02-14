@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, addDays, startOfWeek } from "date-fns";
-import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DateCarouselProps {
   selectedDate: Date;
@@ -159,16 +158,6 @@ const DateCarousel: React.FC<DateCarouselProps> = ({
           <ChevronRight className="w-5 h-5" />
         </button>
       )}
-
-      <DatePicker
-        selected={selectedDate}
-        onChange={(date: Date | null) => date && setSelectedDate(date)}
-        customInput={
-          <button className="p-2 rounded-full hover:bg-gray-200 transition">
-            <Calendar className="w-5 h-5" />
-          </button>
-        }
-      />
     </div>
   );
 };

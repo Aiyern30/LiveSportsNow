@@ -5,6 +5,7 @@ import { SidebarProvider } from "@/components/ui";
 import { AppSidebar } from "@/components/app-sidebar";
 import TopHeader from "@/components/TopHeader";
 import TopNav from "@/components/TopNav";
+import { SeasonProvider } from "@/lib/context/SeasonContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,13 +33,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SidebarProvider>
-          <AppSidebar />
+          <SeasonProvider>
+            <AppSidebar />
 
-          <main className="flex flex-col flex-1">
-            <TopHeader />
-            <TopNav />
-            <div className="flex-1 p-4">{children}</div>
-          </main>
+            <main className="flex flex-col flex-1">
+              <TopHeader />
+              <TopNav />
+              <div className="flex-1 p-4">{children}</div>
+            </main>
+          </SeasonProvider>
         </SidebarProvider>
       </body>
     </html>
