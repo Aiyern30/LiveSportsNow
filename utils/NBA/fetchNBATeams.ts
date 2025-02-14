@@ -38,7 +38,6 @@ export const fetchGameStatistics = async (gameId: number): Promise<TeamStatistic
 
     return data.response as TeamStatistics[];
   } catch (error) {
-    console.error("Failed to fetch game statistics:", error);
     throw new Error(error instanceof Error ? error.message : "Failed to fetch game statistics.");
   }
 };

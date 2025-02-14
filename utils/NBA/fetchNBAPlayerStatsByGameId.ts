@@ -38,7 +38,6 @@ export const fetchNBAPlayerStatsByGameId = async (
     console.log("Fetched NBA Player Stats:", data.response);
     return data.response;
   } catch (error) {
-    console.error("Failed to fetch NBA player stats:", error);
     throw new Error(error instanceof Error ? error.message : "Failed to fetch NBA player stats.");
   }
 };

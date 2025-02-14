@@ -39,7 +39,6 @@ export async function fetchNBAStandings(season: string): Promise<Standing[][]> {
 
     return data.response;
   } catch (error) {
-    console.error("Failed to fetch NBA standings:", error);
     throw new Error(error instanceof Error ? error.message : "Failed to fetch NBA standings.");
   }
 }

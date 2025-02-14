@@ -45,7 +45,6 @@ export const fetchNBAGroups = async (season: string): Promise<NBAGroup[]> => {
 
     return data.response as NBAGroup[];
   } catch (error) {
-    console.error("Fetch NBA Teams Error:", error);
     throw new Error(error instanceof Error ? error.message : "Failed to fetch NBA teams.");
   }
 };
