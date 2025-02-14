@@ -51,7 +51,11 @@ export function NavMain({
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     tooltip={item.title}
-                    className={isItemActive ? "bg-red-500 text-white" : ""}
+                    className={
+                      isItemActive
+                        ? "bg-red-500 text-white hover:bg-red-700 hover:text-black"
+                        : "hover:text-black"
+                    }
                   >
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
@@ -70,7 +74,7 @@ export function NavMain({
                               href={subItem.url}
                               className={
                                 isSubItemActive
-                                  ? "bg-red-500 text-white hover:bg-red-700 hover:text-white"
+                                  ? "bg-red-500 text-white hover:text-black hover:bg-red-700 "
                                   : "hover:text-black"
                               }
                             >

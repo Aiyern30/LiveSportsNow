@@ -40,13 +40,17 @@ const TopNav = () => {
   }, [selectedSeason]);
 
   const isActive = (path: string) => {
-    if (path === "/") {
-      return pathname === "/";
+    if (path === "/NBA" && pathname.startsWith("/NBA") && pathname === "/NBA") {
+      return true;
     }
-    return pathname.startsWith(path);
+
+    if (pathname.includes(path) && path !== "/NBA") {
+      return true;
+    }
+
+    return false;
   };
 
-  // On team click, navigate to /NBA/Teams/[id]
   const handleTeamClick = (id: string) => {
     router.push(`/NBA/Teams/${id}`);
   };
