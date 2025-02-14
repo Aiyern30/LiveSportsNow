@@ -8,12 +8,15 @@ import { PlayerStats } from "@/type/NBA/gamePlayer";
 import ScoresDialog from "./ScoresDialog";
 import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
 import { TeamStatistics } from "@/type/NBA/gameTeams";
+import { useRouter } from "next/navigation";
 
 interface ListsProps {
   filteredGames: NBAGame[];
 }
 
 const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
+  const router = useRouter();
+
   const { isMobile, isDesktop } = useDeviceType();
   const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
   const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
@@ -95,7 +98,14 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
             {/* Home & Away Teams */}
             <div className="flex items-center justify-center sm:justify-start w-1/2 sm:w-auto gap-2">
               {/* Home Team */}
-              <div className="flex items-center space-x-2 w-36 justify-end">
+              <div
+                className="flex items-center space-x-2 w-36 justify-end hover:underline cursor-pointer"
+                onClick={() =>
+                  router.push(
+                    `/Teams?${game.teams.home.id}+name=${game.teams.home.name}`
+                  )
+                }
+              >
                 <Image
                   src={game.teams.home.logo}
                   alt={game.teams.home.name}
@@ -115,7 +125,14 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
               </span>
 
               {/* Away Team */}
-              <div className="flex items-center space-x-2 w-36 justify-start">
+              <div
+                className="flex items-center space-x-2 w-36 justify-end hover:underline cursor-pointer"
+                onClick={() =>
+                  router.push(
+                    `/Teams?${game.teams.away.id}+name=${game.teams.away.name}`
+                  )
+                }
+              >
                 {!isMobile && (
                   <span className="text-sm font-semibold w-28 truncate text-left">
                     {game.teams.away.name}

@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { useSeason } from "@/lib/context/SeasonContext";
 import { Standing } from "@/type/NBA/standings";
 import { fetchNBAStandings } from "@/utils/NBA/fetchStandings";
@@ -19,8 +19,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/";
+import { useRouter } from "next/navigation";
 
 const Standings = () => {
+  const router = useRouter();
+
   const { selectedSeason } = useSeason();
   const [standings, setStandings] = useState<Standing[][]>([]);
   const [selectedGroup, setSelectedGroup] = useState("Western Conference");
@@ -96,9 +99,24 @@ const Standings = () => {
             <TableBody>
               {getFilteredStandings().map((team, index) => (
                 <TableRow key={index}>
-                  <TableCell className="flex items-center gap-3">
+                  <TableCell
+                    className="flex items-center gap-3 cursor-pointer hover:underline"
+                    onClick={() =>
+                      router.push(
+                        `/Teams?${team.team.id}+name=${team.team.name}`
+                      )
+                    }
+                  >
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={team.team.logo} alt={team.team.name} />
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={team.team.logo}
+                          alt={team.team.name}
+                          layout="fill"
+                          objectFit="cover" // Ensures the image covers the container without distortion
+                          className="rounded-full"
+                        />
+                      </div>
                       <AvatarFallback>{team.team.name[0]}</AvatarFallback>
                     </Avatar>
                     {team.team.name}

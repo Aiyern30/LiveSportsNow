@@ -23,12 +23,15 @@ import { PlayerStats } from "@/type/NBA/gamePlayer";
 import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
 import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
 import { TeamStatistics } from "@/type/NBA/gameTeams";
+import { useRouter } from "next/navigation";
 
 interface ScoreGrid {
   filteredGames: NBAGame[];
 }
 
 const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
+  const router = useRouter();
+
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
@@ -114,7 +117,14 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
           <CardContent>
             <div className="grid grid-rows-3 grid-cols-3 text-center gap-2 items-center">
               {/* Row 1: Team Logos */}
-              <div className="flex justify-center">
+              <div
+                className="flex justify-center cursor-pointer"
+                onClick={() =>
+                  router.push(
+                    `/Teams?${game.teams.home.id}+name=${game.teams.home.name}`
+                  )
+                }
+              >
                 <Image
                   src={game.teams.home.logo}
                   alt={game.teams.home.name}
@@ -125,7 +135,14 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
               <p className="text-lg font-semibold row-span-2 flex items-center justify-center">
                 VS
               </p>
-              <div className="flex justify-center">
+              <div
+                className="flex justify-center cursor-pointer"
+                onClick={() =>
+                  router.push(
+                    `/Teams?${game.teams.away.id}+name=${game.teams.away.name}`
+                  )
+                }
+              >
                 <Image
                   src={game.teams.away.logo}
                   alt={game.teams.away.name}
@@ -135,8 +152,26 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
               </div>
 
               {/* Row 2: Team Names */}
-              <p className="text-lg font-semibold">{game.teams.home.name}</p>
-              <p className="text-lg font-semibold">{game.teams.away.name}</p>
+              <p
+                className="text-lg font-semibold hover:underline cursor-pointer"
+                onClick={() =>
+                  router.push(
+                    `/Teams?${game.teams.home.id}+name=${game.teams.home.name}`
+                  )
+                }
+              >
+                {game.teams.home.name}
+              </p>
+              <p
+                className="text-lg font-semibold hover:underline cursor-pointer"
+                onClick={() =>
+                  router.push(
+                    `/Teams?${game.teams.away.id}+name=${game.teams.away.name}`
+                  )
+                }
+              >
+                {game.teams.away.name}
+              </p>
 
               <p
                 className={cn(
@@ -186,7 +221,14 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
                 <TableBody>
                   {/* Home Team Row */}
                   <TableRow className="text-center">
-                    <TableCell className="text-center">
+                    <TableCell
+                      className="text-center cursor-pointer"
+                      onClick={() =>
+                        router.push(
+                          `/Teams?${game.teams.home.id}+name=${game.teams.home.name}`
+                        )
+                      }
+                    >
                       <div className="flex justify-center">
                         <Image
                           src={game.teams.home.logo}
@@ -224,7 +266,14 @@ const ScoreGrid: FC<ScoreGrid> = ({ filteredGames }) => {
                   </TableRow>
 
                   {/* Away Team Row */}
-                  <TableRow className="text-center">
+                  <TableRow
+                    className="text-center cursor-pointer"
+                    onClick={() =>
+                      router.push(
+                        `/Teams?${game.teams.away.id}+name=${game.teams.away.name}`
+                      )
+                    }
+                  >
                     <TableCell className="text-center">
                       <div className="flex justify-center">
                         <Image
