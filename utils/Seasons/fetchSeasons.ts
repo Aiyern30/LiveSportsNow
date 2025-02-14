@@ -12,7 +12,7 @@ export const fetchSeasons = async (): Promise<string[]> => {
       const data = await response.json();
       return data.response || []; 
     } catch (error) {
-      console.error("Error fetching seasons:", error);
+      console.log("Error fetching seasons:", error);
       return [];
     }
   };

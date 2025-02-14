@@ -62,7 +62,7 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
             );
           }
         } catch (error) {
-          console.error("Error fetching player stats:", error);
+          console.log("Error fetching player stats:", error);
         }
       }
     };
@@ -83,7 +83,7 @@ const ScoreTable: FC<TableProps> = ({ filteredGames }) => {
             data.filter((teamStat) => teamStat.team.id === awayTeamId)
           );
         } catch (error) {
-          console.error("Error fetching team stats:", error);
+          console.log("Error fetching team stats:", error);
         }
       }
     };
