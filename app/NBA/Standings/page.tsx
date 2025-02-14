@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { useSeason } from "@/lib/context/SeasonContext";
 import { Standing } from "@/type/NBA/standings";
 import { fetchNBAStandings } from "@/utils/NBA/fetchStandings";
@@ -108,7 +108,15 @@ const Standings = () => {
                     }
                   >
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={team.team.logo} alt={team.team.name} />
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={team.team.logo}
+                          alt={team.team.name}
+                          layout="fill"
+                          objectFit="cover" // Ensures the image covers the container without distortion
+                          className="rounded-full"
+                        />
+                      </div>
                       <AvatarFallback>{team.team.name[0]}</AvatarFallback>
                     </Avatar>
                     {team.team.name}
