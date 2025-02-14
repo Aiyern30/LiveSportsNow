@@ -12,12 +12,12 @@ import {
   Sidebar,
   SidebarHeader,
   SidebarContent,
-  SidebarFooter,
-  SidebarRail,
+  // SidebarFooter,
+  // SidebarRail,
 } from "./ui";
 import { NavMain } from "./nav-main";
 // import { NavProjects } from "./nav-projects";
-import { NavUser } from "./nav-user";
+// import { NavUser } from "./nav-user";
 // import { TeamSwitcher } from "./team-switcher";
 const data = {
   user: {
@@ -196,14 +196,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
-      <SidebarFooter>
+      {/* <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
-      <SidebarRail />
+      <SidebarRail /> */}
     </Sidebar>
   );
 }

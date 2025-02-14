@@ -59,7 +59,7 @@ const TopNav = () => {
             <NavigationMenu>
               <NavigationMenuList className="flex space-x-4 ">
                 <NavigationMenuItem>
-                  <Link href="/" legacyBehavior passHref>
+                  <Link href="/NBA" legacyBehavior passHref>
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
                     >
@@ -68,7 +68,7 @@ const TopNav = () => {
                   </Link>
                   <div
                     className={`w-full h-[3px] bg-red-500 mt-1 ${
-                      isActive("/") ? "visible" : "invisible"
+                      isActive("/NBA") ? "visible" : "invisible"
                     }`}
                   ></div>
                 </NavigationMenuItem>
