@@ -19,8 +19,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/";
+import { useRouter } from "next/navigation";
 
 const Standings = () => {
+  const router = useRouter();
+
   const { selectedSeason } = useSeason();
   const [standings, setStandings] = useState<Standing[][]>([]);
   const [selectedGroup, setSelectedGroup] = useState("Western Conference");
@@ -96,7 +99,14 @@ const Standings = () => {
             <TableBody>
               {getFilteredStandings().map((team, index) => (
                 <TableRow key={index}>
-                  <TableCell className="flex items-center gap-3">
+                  <TableCell
+                    className="flex items-center gap-3 cursor-pointer hover:underline"
+                    onClick={() =>
+                      router.push(
+                        `/Teams?${team.team.id}+name=${team.team.name}`
+                      )
+                    }
+                  >
                     <Avatar className="w-10 h-10">
                       <AvatarImage src={team.team.logo} alt={team.team.name} />
                       <AvatarFallback>{team.team.name[0]}</AvatarFallback>
