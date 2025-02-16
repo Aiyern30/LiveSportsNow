@@ -3,7 +3,7 @@ import { NBAGroup } from "@/type/NBA/groups";
 export const fetchNBAGroups = async (season: string): Promise<NBAGroup[]> => {
   const url = "https://v1.basketball.api-sports.io/teams";
   const headers = {
-    "x-apisports-key": process.env.NEXT_PUBLIC_API_BASKETBALL_KEY || "",
+    "x-apisports-key": process.env.NEXT_PUBLIC_API_SPORTS_KEY || "",
   };
 
   if (!headers["x-apisports-key"]) {

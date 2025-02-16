@@ -3,7 +3,7 @@ import { TeamStatistics } from "@/type/NBA/gameTeams";
 export const fetchGameStatistics = async (gameId: number): Promise<TeamStatistics[]> => {
   const url = `https://v1.basketball.api-sports.io/games/statistics/teams`;
   const headers = {
-    "x-apisports-key": process.env.NEXT_PUBLIC_API_BASKETBALL_KEY || "",
+    "x-apisports-key": process.env.NEXT_PUBLIC_API_SPORTS_KEY || "",
   };
 
   if (!headers["x-apisports-key"]) {

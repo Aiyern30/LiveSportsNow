@@ -3,7 +3,7 @@ import { NBAGame } from "@/type/NBA/game";
 export const fetchNBAGames = async (season: string): Promise<NBAGame[]> => {
   const url = "https://v1.basketball.api-sports.io/games";
   const headers = {
-    "x-apisports-key": process.env.NEXT_PUBLIC_API_BASKETBALL_KEY || "",
+    "x-apisports-key": process.env.NEXT_PUBLIC_API_SPORTS_KEY || "",
   };
 
   if (!headers["x-apisports-key"]) {
