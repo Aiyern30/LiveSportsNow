@@ -1,6 +1,5 @@
+import { SportType } from "@/type/SportType";
 import { APIStatusResponse } from "@/type/Status/status";
-
-type SportType = "BASKETBALL" | "BASEBALL" | "FOOTBALL" | "NFL";
 
 const API_BASE_URLS: Record<SportType, string> = {
   BASKETBALL: "https://v1.basketball.api-sports.io/status",
