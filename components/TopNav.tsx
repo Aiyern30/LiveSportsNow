@@ -26,6 +26,9 @@ const TopNav = () => {
   const [teams, setTeams] = useState<NBAGroup[]>([]);
   const router = useRouter();
 
+  // Determine the sport dynamically (e.g., "NBA" or "NFL")
+  const currentSport = pathname.split("/")[1] || "NBA";
+
   useEffect(() => {
     const fetchTeams = async () => {
       try {
@@ -39,20 +42,18 @@ const TopNav = () => {
     fetchTeams();
   }, [selectedSeason]);
 
+  // Updated isActive function to handle multiple sports
   const isActive = (path: string) => {
-    if (path === "/NBA" && pathname.startsWith("/NBA") && pathname === "/NBA") {
+    const sportPath = `/${currentSport}`;
+    if (path === sportPath && pathname === sportPath) {
       return true;
     }
-
-    if (pathname.includes(path) && path !== "/NBA") {
-      return true;
-    }
-
-    return false;
+    return pathname.includes(path) && path.startsWith(sportPath);
   };
 
+  // Dynamic team click navigation based on sport
   const handleTeamClick = (id: string) => {
-    router.push(`/NBA/Teams/${id}`);
+    router.push(`/${currentSport}/Teams/${id}`);
   };
 
   return (
@@ -63,7 +64,7 @@ const TopNav = () => {
             <NavigationMenu>
               <NavigationMenuList className="flex space-x-4 ">
                 <NavigationMenuItem>
-                  <Link href="/NBA" legacyBehavior passHref>
+                  <Link href={`/${currentSport}`} legacyBehavior passHref>
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
                     >
@@ -72,13 +73,17 @@ const TopNav = () => {
                   </Link>
                   <div
                     className={`w-full h-[3px] bg-red-500 mt-1 ${
-                      isActive("/NBA") ? "visible" : "invisible"
+                      isActive(`/${currentSport}`) ? "visible" : "invisible"
                     }`}
                   ></div>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link href="/NBA/Scores" legacyBehavior passHref>
+                  <Link
+                    href={`/${currentSport}/Scores`}
+                    legacyBehavior
+                    passHref
+                  >
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
                     >
@@ -87,28 +92,19 @@ const TopNav = () => {
                   </Link>
                   <div
                     className={`w-full h-[3px] bg-red-500 mt-1 ${
-                      isActive("/NBA/Scores") ? "visible" : "invisible"
+                      isActive(`/${currentSport}/Scores`)
+                        ? "visible"
+                        : "invisible"
                     }`}
                   ></div>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link href="/NBA/Schedule" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={navigationMenuTriggerStyle()}
-                    >
-                      Schedule
-                    </NavigationMenuLink>
-                  </Link>
-                  <div
-                    className={`w-full h-[3px] bg-red-500 mt-1 ${
-                      isActive("/NBA/Schedule") ? "visible" : "invisible"
-                    }`}
-                  ></div>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <Link href="/NBA/Standings" legacyBehavior passHref>
+                  <Link
+                    href={`/${currentSport}/Standings`}
+                    legacyBehavior
+                    passHref
+                  >
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle()}
                     >
@@ -117,22 +113,9 @@ const TopNav = () => {
                   </Link>
                   <div
                     className={`w-full h-[3px] bg-red-500 mt-1 ${
-                      isActive("/NBA/Standings") ? "visible" : "invisible"
-                    }`}
-                  ></div>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <Link href="/NBA/Stats" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={navigationMenuTriggerStyle()}
-                    >
-                      Stats
-                    </NavigationMenuLink>
-                  </Link>
-                  <div
-                    className={`w-full h-[3px] bg-red-500 mt-1 ${
-                      isActive("/NBA/Stats") ? "visible" : "invisible"
+                      isActive(`/${currentSport}/Standings`)
+                        ? "visible"
+                        : "invisible"
                     }`}
                   ></div>
                 </NavigationMenuItem>
@@ -143,7 +126,9 @@ const TopNav = () => {
                   </NavigationMenuTrigger>
                   <div
                     className={`w-full h-[3px] bg-red-500 mt-1 ${
-                      isActive("/NBA/Teams") ? "visible" : "invisible"
+                      isActive(`/${currentSport}/Teams`)
+                        ? "visible"
+                        : "invisible"
                     }`}
                   ></div>
                   <NavigationMenuContent className="max-h-96 overflow-y-auto">

@@ -48,7 +48,7 @@ const Standings = () => {
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
     setSelectedGroup(
-      category === "Conference" ? "Western Conference" : "Central"
+      category === "Conference" ? "Western Conference" : "Atlantic"
     );
   };
 
@@ -116,18 +116,16 @@ const Standings = () => {
                       )
                     }
                   >
-                    <Avatar className="w-10 h-10">
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={team.team.logo}
-                          alt={team.team.name}
-                          layout="fill"
-                          objectFit="cover"
-                          className="rounded-full"
-                        />
-                      </div>
-                      <AvatarFallback>{team.team.name[0]}</AvatarFallback>
+                    <Avatar className="w-10 h-10 overflow-hidden">
+                      <Image
+                        src={team.team.logo}
+                        alt={team.team.name}
+                        width={96}
+                        height={96}
+                        className="rounded-full object-cover w-full h-full"
+                      />
                     </Avatar>
+
                     {team.team.name}
                   </TableCell>
                   <TableCell>{team.games.played}</TableCell>
@@ -145,7 +143,7 @@ const Standings = () => {
 
         <TabsContent value="Division">
           <Tabs
-            defaultValue="Central"
+            defaultValue="Atlantic"
             value={selectedGroup}
             onValueChange={setSelectedGroup}
             className="w-[600px] mb-4"

@@ -41,17 +41,10 @@ const data = {
           title: "Scores",
           url: "/NBA/Scores",
         },
-        {
-          title: "Schedule",
-          url: "/NBA/Schedule",
-        },
+
         {
           title: "Standings",
           url: "/NBA/Standings",
-        },
-        {
-          title: "Stats",
-          url: "/NBA/Stats",
         },
         {
           title: "Teams",
