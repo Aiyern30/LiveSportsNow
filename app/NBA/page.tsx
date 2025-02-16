@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { APIStatusResponse } from "@/type/Status/status";
-import { fetchBasketballStatus } from "@/utils/Status/fetchBasketballStatus";
 import { ApiError } from "@/components/PlanError";
+import { fetchSportsStatus } from "@/utils/Status/fetchStatus";
 
 const Home = () => {
   const [subscription, setSubscription] = useState<{
@@ -19,7 +19,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data: APIStatusResponse = await fetchBasketballStatus();
+        const data: APIStatusResponse = await fetchSportsStatus("BASKETBALL");
 
         if (
           !data.response ||
@@ -52,7 +52,7 @@ const Home = () => {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-[calc(100vh-160px)]">
       <div className="bg-white p-8 rounded-lg shadow-lg w-[400px] text-center">
         <h1 className="text-2xl font-semibold text-gray-800 mb-4">
           API Subscription Details
