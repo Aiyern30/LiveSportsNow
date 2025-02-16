@@ -1,143 +1,92 @@
 "use client";
 
-import { useDeviceType } from "@/lib/useDevicesType";
-import { fetchNBAGames } from "@/utils/NBA/fetchNBAGames";
-import { useEffect, useState } from "react";
-import { NBAGame } from "@/type/NBA/game";
-import DateCarousel from "@/components/DateCarousel";
-import { format } from "date-fns";
-import { DatePickerDemo } from "@/components/DatePickerDemo";
-import ViewSelector from "@/components/ViewSelector";
-import ScoreLists from "@/components/pages/Scores/ScoreLists";
-import ScoreGrid from "@/components/pages/Scores/ScoreGrid";
-import ScoreTable from "@/components/pages/Scores/ScoreTable";
-import SkeletonScoreTable from "@/components/pages/Scores/Skeleton/SkeletonScoreTable";
-import SkeletonScoreGrid from "@/components/pages/Scores/Skeleton/SkeletonScoreGrid";
-import SkeletonScoreLists from "@/components/pages/Scores/Skeleton/SkeletonScoreList";
-import { useSeason } from "@/lib/context/SeasonContext";
+import React, { useEffect, useState } from "react";
+import { APIStatusResponse } from "@/type/Status/status";
+import { fetchBasketballStatus } from "@/utils/Status/fetchBasketballStatus";
 import { ApiError } from "@/components/PlanError";
 
-const NBAStandings = () => {
-  const { isMobile } = useDeviceType();
-  const { selectedSeason } = useSeason();
-  const [view, setView] = useState("list");
+const Home = () => {
+  const [subscription, setSubscription] = useState<{
+    plan: string;
+    end: string;
+    active: boolean;
+  } | null>(null);
+
+  const [limitDay, setLimitDay] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const savedView = localStorage.getItem("viewPreference");
-    if (savedView) {
-      setView(savedView);
-    }
-  }, []);
-
-  const handleViewChange = (newView: string) => {
-    setView(newView);
-    localStorage.setItem("viewPreference", newView);
-  };
-
-  const [nbaGames, setNbaGames] = useState<NBAGame[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [enabledDates, setEnabledDates] = useState<string[]>([]);
-
-  useEffect(() => {
-    const getNBAGames = async () => {
+    const fetchData = async () => {
       try {
-        const data = await fetchNBAGames(selectedSeason);
-        setNbaGames(data);
+        const data: APIStatusResponse = await fetchBasketballStatus();
 
-        // Extract available dates from fetched games
-        const availableDates = data.map((game) =>
-          format(new Date(game.date), "yyyy-MM-dd")
-        );
-        const uniqueAvailableDates = Array.from(new Set(availableDates));
-        setEnabledDates(uniqueAvailableDates);
-
-        const latestDate = uniqueAvailableDates
-          .map((date) => new Date(date))
-          .sort((a, b) => b.getTime() - a.getTime())
-          .shift();
-
-        if (latestDate) {
-          setSelectedDate(latestDate);
+        if (
+          !data.response ||
+          !data.response.subscription ||
+          !data.response.requests
+        ) {
+          throw new Error("Invalid API response or plan limit reached.");
         }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An unknown error occurred while fetching NBA games.");
-        }
-      } finally {
-        setLoading(false);
+
+        const sub = data.response.subscription;
+        const req = data.response.requests;
+
+        setSubscription({
+          plan: sub.plan,
+          end: new Date(sub.end).toLocaleDateString("en-GB"),
+          active: sub.active,
+        });
+
+        setLimitDay(req.limit_day);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Something went wrong.");
       }
     };
 
-    getNBAGames();
-  }, [selectedSeason]);
-
-  if (loading) {
-    return (
-      <div className="mx-auto p-4">
-        {isMobile ? (
-          <div className="flex justify-center items-center h-20">
-            <DatePickerDemo
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-            />
-          </div>
-        ) : (
-          <DateCarousel
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            enabledDates={enabledDates}
-          />
-        )}
-        <h1 className="text-2xl font-bold my-6 flex justify-between items-center w-full">
-          <div className="mx-auto">NBA Games</div>
-          <ViewSelector onViewChange={handleViewChange} />
-        </h1>
-        {view === "list" && <SkeletonScoreLists rowCount={5} />}
-        {view === "grid" && <SkeletonScoreGrid rowCount={6} />}
-        {view === "table" && <SkeletonScoreTable rowCount={5} />}
-      </div>
-    );
-  }
+    fetchData();
+  }, []);
 
   if (error) {
     return <ApiError message={error} />;
   }
 
-  const filteredGames = nbaGames.filter(
-    (game) =>
-      format(new Date(game.date), "yyyy-MM-dd") ===
-      format(selectedDate, "yyyy-MM-dd")
-  );
-
   return (
-    <div className="mx-auto p-4">
-      {isMobile ? (
-        <div className="flex justify-center items-center h-20">
-          <DatePickerDemo
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          />
-        </div>
-      ) : (
-        <DateCarousel
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          enabledDates={enabledDates}
-        />
-      )}
-      <h1 className="text-2xl font-bold my-6 flex justify-between items-center w-full">
-        <div className="lg:mx-auto">NBA Games</div>
-        <ViewSelector onViewChange={handleViewChange} />
-      </h1>
-      {view === "list" && <ScoreLists filteredGames={filteredGames} />}
-      {view === "grid" && <ScoreGrid filteredGames={filteredGames} />}
-      {view === "table" && <ScoreTable filteredGames={filteredGames} />}
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-[400px] text-center">
+        <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+          API Subscription Details
+        </h1>
+        {subscription && limitDay !== null ? (
+          <div className="space-y-4">
+            <p className="text-lg">
+              <span className="font-medium text-gray-600">Plan: </span>
+              {subscription.plan}
+            </p>
+            <p className="text-lg">
+              <span className="font-medium text-gray-600">End Date: </span>
+              {subscription.end}
+            </p>
+            <p className="text-lg">
+              <span className="font-medium text-gray-600">Active: </span>
+              <span
+                className={`px-3 py-1 rounded-full text-white ${
+                  subscription.active ? "bg-green-500" : "bg-red-500"
+                }`}
+              >
+                {subscription.active ? "Yes" : "No"}
+              </span>
+            </p>
+            <p className="text-lg">
+              <span className="font-medium text-gray-600">Daily Limit: </span>
+              {limitDay}
+            </p>
+          </div>
+        ) : (
+          <p className="text-gray-500">Loading...</p>
+        )}
+      </div>
     </div>
   );
 };
 
-export default NBAStandings;
+export default Home;
