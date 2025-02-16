@@ -2,7 +2,7 @@ import { APIStatusResponse } from "@/type/Status/status";
 
 const API_BASE_URL = "https://v1.basketball.api-sports.io/status";
 const headers = {
-  "x-apisports-key": process.env.NEXT_PUBLIC_API_BASKETBALL_KEY || "",
+  "x-apisports-key": process.env.NEXT_PUBLIC_API_SPORTS_KEY || "",
 };
 
 export const fetchBasketballStatus = async (): Promise<APIStatusResponse> => {
