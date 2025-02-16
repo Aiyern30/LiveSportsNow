@@ -18,6 +18,8 @@ import { useDeviceType } from "@/lib/useDevicesType";
 import { fetchNBAGroups } from "@/utils/NBA/fetchNBAGroup";
 import { NBAGroup } from "@/type/NBA/groups";
 import { useSeason } from "@/lib/context/SeasonContext";
+import { NFLTeam } from "@/type/NFL/gameTeams";
+import { fetchNFLTeams } from "@/utils/NFL/fetchNFLGroup";
 
 const TopNav = () => {
   const { selectedSeason } = useSeason();
@@ -25,9 +27,9 @@ const TopNav = () => {
   const { isMobile } = useDeviceType();
   const pathname = usePathname();
 
-  const [teams, setTeams] = useState<NBAGroup[]>([]);
+  const [teams, setTeams] = useState<Array<NBAGroup | NFLTeam>>([]);
   const [mounted, setMounted] = useState(false);
-  const [currentSport, setCurrentSport] = useState("NBA");
+  const [currentSport, setCurrentSport] = useState<"NBA" | "NFL">("NBA");
 
   useEffect(() => {
     setMounted(true);
@@ -36,26 +38,29 @@ const TopNav = () => {
   useEffect(() => {
     if (mounted) {
       const sportFromPath = pathname?.split("/")[1] || "NBA";
-      setCurrentSport(sportFromPath);
+      setCurrentSport(sportFromPath === "NFL" ? "NFL" : "NBA"); // Ensure only NBA or NFL
     }
   }, [pathname, mounted]);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || !selectedSeason) return;
 
     const fetchTeams = async () => {
-      if (!selectedSeason) return;
-
       try {
-        const data = await fetchNBAGroups(selectedSeason);
-        setTeams(data);
+        let data;
+        if (currentSport === "NBA") {
+          data = await fetchNBAGroups(selectedSeason);
+        } else if (currentSport === "NFL") {
+          data = await fetchNFLTeams(selectedSeason);
+        }
+        setTeams(data || []);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching teams:", error);
       }
     };
 
     fetchTeams();
-  }, [selectedSeason, mounted]);
+  }, [selectedSeason, currentSport, mounted]);
 
   if (!mounted) return null;
 
