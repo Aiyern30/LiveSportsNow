@@ -36,10 +36,10 @@ const TopNav = () => {
   }, []);
 
   useEffect(() => {
-    if (mounted) {
-      const sportFromPath = pathname?.split("/")[1] || "NBA";
-      setCurrentSport(sportFromPath === "NFL" ? "NFL" : "NBA"); // Ensure only NBA or NFL
-    }
+    if (!mounted) return;
+
+    const sportFromPath = pathname?.split("/")[1] || "NBA";
+    setCurrentSport(sportFromPath === "NFL" ? "NFL" : "NBA");
   }, [pathname, mounted]);
 
   useEffect(() => {
@@ -47,13 +47,35 @@ const TopNav = () => {
 
     const fetchTeams = async () => {
       try {
+        let storedData = null;
+        let storedSport = null;
+
+        // Ensure localStorage is accessed only in the client
+        if (typeof window !== "undefined") {
+          storedData = localStorage.getItem("teamsData");
+          storedSport = localStorage.getItem("currentSport");
+        }
+
+        // Load cached data if it's for the correct sport
+        if (storedData && storedSport === currentSport) {
+          setTeams(JSON.parse(storedData));
+          return;
+        }
+
         let data;
         if (currentSport === "NBA") {
           data = await fetchNBAGroups(selectedSeason);
         } else if (currentSport === "NFL") {
           data = await fetchNFLTeams(selectedSeason);
         }
+
         setTeams(data || []);
+
+        // Store fetched data in localStorage
+        if (typeof window !== "undefined") {
+          localStorage.setItem("teamsData", JSON.stringify(data || []));
+          localStorage.setItem("currentSport", currentSport);
+        }
       } catch (error) {
         console.error("Error fetching teams:", error);
       }
