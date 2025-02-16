@@ -18,8 +18,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LiveSportsNow",
-  description: "Stay updated with live sports scores and stats",
+  title: "LiveSportNow",
+  description: "Developed by Ian Gan",
+  icons: {
+    icon: "/Logo.png",
+  },
 };
 
 export default function RootLayout({

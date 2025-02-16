@@ -2,10 +2,14 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "NBA - Scores",
+  description: "Check out the latest NBA Scores.",
+  icons: {
+    icon: "/Logo.png",
+  },
 };
 
-const HomeLayout = ({ children }: { children: React.ReactNode }) => {
+const ScoreLayout = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-export default HomeLayout;
+export default ScoreLayout;
