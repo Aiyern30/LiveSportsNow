@@ -44,6 +44,8 @@ const TopNav = () => {
     if (!mounted) return;
 
     const fetchTeams = async () => {
+      if (!selectedSeason) return;
+
       try {
         const data = await fetchNBAGroups(selectedSeason);
         setTeams(data);
