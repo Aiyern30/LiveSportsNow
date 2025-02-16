@@ -38,7 +38,7 @@ const TopHeader = () => {
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
 
-        <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+        <Select value={selectedSeason ?? ""} onValueChange={setSelectedSeason}>
           <SelectTrigger
             className={
               isApiError ? "border-red-500 bg-red-100 text-red-700" : ""

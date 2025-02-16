@@ -12,8 +12,10 @@ const Home = () => {
     active: boolean;
   } | null>(null);
 
-  const [limitDay, setLimitDay] = useState<number | null>(null);
-
+  const [requestUsage, setRequestUsage] = useState<{
+    current: number;
+    limit: number;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const Home = () => {
           active: sub.active,
         });
 
-        setLimitDay(req.limit_day);
+        setRequestUsage({ current: req.current, limit: req.limit_day });
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong.");
       }
@@ -57,7 +59,7 @@ const Home = () => {
         <h1 className="text-2xl font-semibold text-gray-800 mb-4">
           API Subscription Details
         </h1>
-        {subscription && limitDay !== null ? (
+        {subscription && requestUsage ? (
           <div className="space-y-4">
             <p className="text-lg">
               <span className="font-medium text-gray-600">Plan: </span>
@@ -78,8 +80,12 @@ const Home = () => {
               </span>
             </p>
             <p className="text-lg">
-              <span className="font-medium text-gray-600">Daily Limit: </span>
-              {limitDay}
+              <span className="font-medium text-gray-600">
+                Requests Used Today:{" "}
+              </span>
+              <span className="font-bold text-blue-600">
+                {requestUsage.current} / {requestUsage.limit}
+              </span>
             </p>
           </div>
         ) : (
