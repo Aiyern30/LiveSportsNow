@@ -43,6 +43,7 @@ const NBAStandings = () => {
   useEffect(() => {
     const getNBAGames = async () => {
       try {
+        if (!selectedSeason) return;
         const data = await fetchNBAGames(selectedSeason);
         setNbaGames(data);
 
