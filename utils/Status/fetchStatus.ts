@@ -1,11 +1,12 @@
 import { APIStatusResponse } from "@/type/Status/status";
 
-type SportType = "BASKETBALL" | "BASEBALL" | "FOOTBALL";
+type SportType = "BASKETBALL" | "BASEBALL" | "FOOTBALL" | "NFL";
 
 const API_BASE_URLS: Record<SportType, string> = {
   BASKETBALL: "https://v1.basketball.api-sports.io/status",
   BASEBALL: "https://v1.baseball.api-sports.io/status",
   FOOTBALL: "https://v3.football.api-sports.io/status",
+  NFL:" https://v1.american-football.api-sports.io"
 };
 
 export const fetchSportsStatus = async (sportType: SportType): Promise<APIStatusResponse> => {
