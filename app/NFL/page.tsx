@@ -15,6 +15,7 @@ const Home = () => {
   const [limitDay, setLimitDay] = useState<number | null>(null);
 
   const [error, setError] = useState<string | null>(null);
+  console.log("error", error);
 
   useEffect(() => {
     const fetchData = async () => {
