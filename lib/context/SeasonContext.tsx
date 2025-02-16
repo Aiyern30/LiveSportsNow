@@ -15,10 +15,10 @@ const SPORT_TYPE_MAP: Record<string, SportType> = {
 
 // Default season formats for different sports
 const DEFAULT_SEASON_MAP: Record<SportType, string> = {
-  BASKETBALL: "2023-2024", // NBA Format
-  BASEBALL: "2023", // MLB Format
-  NFL: "2023", // NFL Format
-  FOOTBALL: "2023", // Soccer/FIFA Format
+  BASKETBALL: "2023-2024",
+  BASEBALL: "2023",
+  NFL: "2023",
+  FOOTBALL: "2023",
 };
 
 interface SeasonContextType {
@@ -36,51 +36,53 @@ export const SeasonProvider: React.FC<{ children: React.ReactNode }> = ({
   const pathname = usePathname();
   const sportType = SPORT_TYPE_MAP[pathname];
 
-  console.log("Current Pathname:", pathname);
-  console.log("Mapped SportType:", sportType);
-
   const defaultSeason = sportType ? DEFAULT_SEASON_MAP[sportType] : null;
-  console.log("Default Season:", defaultSeason);
 
   const [seasons, setSeasons] = useState<string[]>([]);
-  const [selectedSeason, setSelectedSeason] = useState<string | null>(
-    defaultSeason
-  );
+  const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
   const [isApiError, setIsApiError] = useState<boolean>(false);
 
   useEffect(() => {
-    const getSeasons = async () => {
-      if (!sportType) {
-        console.warn(`Unknown sport type for pathname: ${pathname}`);
-        return;
-      }
+    if (!sportType) return;
 
-      try {
-        const fetchedSeasons = await fetchSeasons(sportType);
-        setSeasons(fetchedSeasons);
+    const storedSeasons = localStorage.getItem(`seasons_${sportType}`);
+    const storedSeason = localStorage.getItem(`selectedSeason_${sportType}`);
 
-        const savedSeason = localStorage.getItem("selectedSeason");
-
-        // Use saved season if available, otherwise fallback to dynamic default
-        setSelectedSeason(savedSeason || defaultSeason);
-      } catch (error: unknown) {
-        setIsApiError(true);
-        console.error("Error fetching seasons:", error);
-      }
-    };
-
-    getSeasons();
-  }, [defaultSeason, pathname, sportType]);
-
-  useEffect(() => {
-    if (selectedSeason) {
-      localStorage.setItem("selectedSeason", selectedSeason);
+    if (storedSeasons) {
+      setSeasons(JSON.parse(storedSeasons));
+    } else {
+      fetchSeasons(sportType)
+        .then((fetchedSeasons) => {
+          setSeasons(fetchedSeasons);
+          localStorage.setItem(
+            `seasons_${sportType}`,
+            JSON.stringify(fetchedSeasons)
+          );
+        })
+        .catch((error) => {
+          setIsApiError(true);
+          console.error("Error fetching seasons:", error);
+        });
     }
-  }, [selectedSeason]);
+
+    setSelectedSeason(storedSeason || defaultSeason);
+  }, [defaultSeason, sportType]);
+
+  const handleSetSelectedSeason = (season: string) => {
+    if (season !== selectedSeason) {
+      setSelectedSeason(season);
+      localStorage.setItem(`selectedSeason_${sportType}`, season);
+    }
+  };
 
   return (
     <SeasonContext.Provider
-      value={{ seasons, selectedSeason, setSelectedSeason, isApiError }}
+      value={{
+        seasons,
+        selectedSeason,
+        setSelectedSeason: handleSetSelectedSeason,
+        isApiError,
+      }}
     >
       {children}
     </SeasonContext.Provider>
