@@ -8,12 +8,12 @@ import DateCarousel from "@/components/DateCarousel";
 import { format } from "date-fns";
 import { DatePickerDemo } from "@/components/DatePickerDemo";
 import ViewSelector from "@/components/ViewSelector";
-import ScoreLists from "@/components/pages/Scores/ScoreLists";
-import ScoreGrid from "@/components/pages/Scores/ScoreGrid";
-import ScoreTable from "@/components/pages/Scores/ScoreTable";
-import SkeletonScoreTable from "@/components/pages/Scores/Skeleton/SkeletonScoreTable";
-import SkeletonScoreGrid from "@/components/pages/Scores/Skeleton/SkeletonScoreGrid";
-import SkeletonScoreLists from "@/components/pages/Scores/Skeleton/SkeletonScoreList";
+import ScoreLists from "@/components/pages/NBA/Scores/ScoreLists";
+import ScoreGrid from "@/components/pages/NBA/Scores/ScoreGrid";
+import ScoreTable from "@/components/pages/NBA/Scores/ScoreTable";
+import SkeletonScoreTable from "@/components/pages/NBA/Skeleton/SkeletonScoreTable";
+import SkeletonScoreGrid from "@/components/pages/NBA/Skeleton/SkeletonScoreGrid";
+import SkeletonScoreLists from "@/components/pages/NBA/Skeleton/SkeletonScoreList";
 import { useSeason } from "@/lib/context/SeasonContext";
 import { ApiError } from "@/components/PlanError";
 
