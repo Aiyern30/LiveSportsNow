@@ -1,6 +1,6 @@
 export interface NFLGame {
     game: {
-      id: number;
+      id: string;
       stage: string;
       week: string;
       date: {

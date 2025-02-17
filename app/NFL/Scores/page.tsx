@@ -10,6 +10,7 @@ import { useSeason } from "@/lib/context/SeasonContext";
 import { ApiError } from "@/components/PlanError";
 import { NFLGame } from "@/type/NFL/game";
 import { fetchNFLGames } from "@/utils/NFL/fetchNFLGames";
+import ScoreLists from "@/components/pages/NFL/Scores/ScoreLists";
 
 const NBAStandings = () => {
   const { isMobile } = useDeviceType();
@@ -36,7 +37,7 @@ const NBAStandings = () => {
   const [enabledDates, setEnabledDates] = useState<string[]>([]);
 
   useEffect(() => {
-    const getnflGames = async () => {
+    const getNFLGames = async () => {
       try {
         if (!selectedSeason) return;
         const data = await fetchNFLGames(selectedSeason);
@@ -61,14 +62,14 @@ const NBAStandings = () => {
         if (error instanceof Error) {
           setError(error.message);
         } else {
-          setError("An unknown error occurred while fetching NBA games.");
+          setError("An unknown error occurred while fetching NFL games.");
         }
       } finally {
         setLoading(false);
       }
     };
 
-    getnflGames();
+    getNFLGames();
   }, [selectedSeason]);
 
   if (loading) {
@@ -89,7 +90,7 @@ const NBAStandings = () => {
           />
         )}
         <h1 className="text-2xl font-bold my-6 flex justify-between items-center w-full">
-          <div className="mx-auto">NBA Games</div>
+          <div className="mx-auto">NFL Games</div>
           <ViewSelector onViewChange={handleViewChange} />
         </h1>
         {/* {view === "list" && <SkeletonScoreLists rowCount={5} />}
@@ -127,11 +128,11 @@ const NBAStandings = () => {
         />
       )}
       <h1 className="text-2xl font-bold my-6 flex justify-between items-center w-full">
-        <div className="lg:mx-auto">NBA Games</div>
+        <div className="lg:mx-auto">NFL Games</div>
         <ViewSelector onViewChange={handleViewChange} />
       </h1>
-      {/* {view === "list" && <ScoreLists filteredGames={filteredGames} />}
-      {view === "grid" && <ScoreGrid filteredGames={filteredGames} />}
+      {view === "list" && <ScoreLists filteredGames={filteredGames} />}
+      {/* {view === "grid" && <ScoreGrid filteredGames={filteredGames} />}
       {view === "table" && <ScoreTable filteredGames={filteredGames} />} */}
     </div>
   );
