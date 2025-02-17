@@ -1,6 +1,6 @@
 "use client";
 
-import { NFLTeam } from "@/type/NFL/gameTeams";
+import { NFLTeam } from "@/type/NFL/teams";
 import { fetchNFLTeams } from "@/utils/NFL/fetchNFLGroup";
 import React, { useEffect, useState } from "react";
 

@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui";
 import { PlayerStats } from "@/type/NBA/gamePlayer";
-import { TeamStatistics } from "@/type/NBA/gameTeams";
+import { TeamStatistics } from "@/type/NBA/gameTeamStatistics";
 import React from "react";
 
 interface DialogProps {

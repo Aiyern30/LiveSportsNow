@@ -17,7 +17,7 @@ import {
 import { PlayerStats } from "@/type/NBA/gamePlayer";
 import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
 import ScoresDialog from "./ScoresDialog";
-import { TeamStatistics } from "@/type/NBA/gameTeams";
+import { TeamStatistics } from "@/type/NBA/gameTeamStatistics";
 import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
 import { useRouter } from "next/navigation";
 

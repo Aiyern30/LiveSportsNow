@@ -16,9 +16,9 @@ import {
 import Image from "next/image";
 import { useDeviceType } from "@/lib/useDevicesType";
 import { fetchNBAGroups } from "@/utils/NBA/fetchNBAGroup";
-import { NBAGroup } from "@/type/NBA/groups";
+import { NBAGroup } from "@/type/NBA/teams";
 import { useSeason } from "@/lib/context/SeasonContext";
-import { NFLTeam } from "@/type/NFL/gameTeams";
+import { NFLTeam } from "@/type/NFL/teams";
 import { fetchNFLTeams } from "@/utils/NFL/fetchNFLGroup";
 
 const TopNav = () => {

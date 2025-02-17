@@ -1,4 +1,4 @@
-import { NFLTeam } from "@/type/NFL/gameTeams";
+import { NFLTeam } from "@/type/NFL/teams";
 
 export const fetchNFLTeams = async (season: string): Promise<NFLTeam[]> => {
   const url = "https://v1.american-football.api-sports.io/teams";

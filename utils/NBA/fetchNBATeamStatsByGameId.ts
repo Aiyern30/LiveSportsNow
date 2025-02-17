@@ -1,4 +1,4 @@
-import { TeamStatistics } from "@/type/NBA/gameTeams";
+import { TeamStatistics } from "@/type/NBA/gameTeamStatistics";
 
 export const fetchNBATeamStatsByGameId = async (
   gameId: string
