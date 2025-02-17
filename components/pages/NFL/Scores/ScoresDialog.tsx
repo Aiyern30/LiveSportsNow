@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Dialog,
@@ -18,7 +19,6 @@ import {
 import { NFLPlayerStatistics } from "@/type/NFL/gamePlayer";
 import { NFLTeamStatistics } from "@/type/NFL/gameTeamStatistics";
 import Image from "next/image";
-import React from "react";
 
 interface DialogProps {
   dialogOpen: boolean;
@@ -27,8 +27,6 @@ interface DialogProps {
   awayPlayers: NFLPlayerStatistics[];
   homeTeamStats: NFLTeamStatistics[];
   awayTeamStats: NFLTeamStatistics[];
-  homeScore: number;
-  awayScore: number;
 }
 
 const ScoresDialog = ({
@@ -38,9 +36,34 @@ const ScoresDialog = ({
   awayPlayers,
   homeTeamStats,
   awayTeamStats,
-}: // homeScore,
-// awayScore,
-DialogProps) => {
+}: DialogProps) => {
+  const [homeDefaultOpen, setHomeDefaultOpen] = useState<string | undefined>(
+    homePlayers.length > 0 && homePlayers[0].groups.length > 0
+      ? `home-item-0-0`
+      : undefined
+  );
+
+  const [awayDefaultOpen, setAwayDefaultOpen] = useState<string | undefined>(
+    awayPlayers.length > 0 && awayPlayers[0].groups.length > 0
+      ? `away-item-0-0`
+      : undefined
+  );
+
+  useEffect(() => {
+    if (dialogOpen) {
+      setHomeDefaultOpen(
+        homePlayers.length > 0 && homePlayers[0].groups.length > 0
+          ? `home-item-0-0`
+          : undefined
+      );
+      setAwayDefaultOpen(
+        awayPlayers.length > 0 && awayPlayers[0].groups.length > 0
+          ? `away-item-0-0`
+          : undefined
+      );
+    }
+  }, [dialogOpen, homePlayers, awayPlayers]);
+
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent className="sm:max-w-[425px] md:max-w-[600px] lg:max-w-[800px] max-h-[80vh] overflow-auto">
@@ -67,7 +90,12 @@ DialogProps) => {
           {/* Home Team Stats */}
           <TabsContent value={homeTeamStats[0]?.team.name || "Home"}>
             {homePlayers.length > 0 ? (
-              <Accordion type="single" collapsible>
+              <Accordion
+                type="single"
+                collapsible
+                value={homeDefaultOpen}
+                onValueChange={setHomeDefaultOpen}
+              >
                 {homePlayers.flatMap((player, pIndex) =>
                   player.groups.map((group, gIndex) => (
                     <AccordionItem
@@ -77,7 +105,7 @@ DialogProps) => {
                       <AccordionTrigger>{group.name}</AccordionTrigger>
                       <AccordionContent>
                         {group.players.map((playerData, dIndex) => (
-                          <div key={dIndex} className="border-b pb-2 mb-2">
+                          <div key={dIndex} className="pb-2 mb-2">
                             <div className="flex items-center gap-2">
                               <Image
                                 src={playerData.player.image}
@@ -118,7 +146,12 @@ DialogProps) => {
           {/* Away Team Stats */}
           <TabsContent value={awayTeamStats[0]?.team.name || "Away"}>
             {awayPlayers.length > 0 ? (
-              <Accordion type="single" collapsible>
+              <Accordion
+                type="single"
+                collapsible
+                value={awayDefaultOpen}
+                onValueChange={setAwayDefaultOpen}
+              >
                 {awayPlayers.flatMap((player, pIndex) =>
                   player.groups.map((group, gIndex) => (
                     <AccordionItem

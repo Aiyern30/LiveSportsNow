@@ -321,8 +321,6 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
           awayPlayers={awayPlayers}
           homeTeamStats={homeTeamStats}
           awayTeamStats={awayTeamStats}
-          homeScore={selectedGame?.scores.home.total ?? 0}
-          awayScore={selectedGame?.scores.away.total ?? 0}
         />
       )}
     </div>
