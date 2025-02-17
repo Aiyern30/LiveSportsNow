@@ -1,7 +1,7 @@
-import { NFLTeam } from "@/type/NFL/teams";
+import { NFLGame } from "@/type/NFL/game";
 
-export const fetchNFLTeams = async (season: string): Promise<NFLTeam[]> => {
-  const url = "https://v1.american-football.api-sports.io/teams";
+export const fetchNFLGames = async (season: string): Promise<NFLGame[]> => {
+  const url = "https://v1.american-football.api-sports.io/games";
   const headers = {
     "x-apisports-key": process.env.NEXT_PUBLIC_API_SPORTS_KEY || "",
   };
@@ -22,7 +22,7 @@ export const fetchNFLTeams = async (season: string): Promise<NFLTeam[]> => {
     });
 
     if (!response.ok) {
-      throw new Error(`Error fetching NFL teams: ${response.status} - ${response.statusText}`);
+      throw new Error(`Error fetching NFL games: ${response.status} - ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -30,7 +30,9 @@ export const fetchNFLTeams = async (season: string): Promise<NFLTeam[]> => {
     // Handle API-specific errors
     if (data.errors) {
       if (data.errors.requests) {
-        throw new Error("You have reached the request limit for the day. Please upgrade your plan.");
+        throw new Error(
+          "You have reached the request limit for the day. Please upgrade your plan."
+        );
       }
       if (data.errors.plan) {
         throw new Error(`API Plan Error: ${data.errors.plan}`);
@@ -41,8 +43,8 @@ export const fetchNFLTeams = async (season: string): Promise<NFLTeam[]> => {
       throw new Error("Invalid response structure from API.");
     }
 
-    return data.response as NFLTeam[];
+    return data.response as NFLGame[];
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to fetch NFL teams.");
+    throw new Error(error instanceof Error ? error.message : "Failed to fetch NFL games.");
   }
 };

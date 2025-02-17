@@ -1,4 +1,4 @@
-import { NBAGroup } from "@/type/NBA/groups";
+import { NBAGroup } from "@/type/NBA/teams";
 
 export const fetchNBAGroups = async (season: string): Promise<NBAGroup[]> => {
   const url = "https://v1.basketball.api-sports.io/teams";

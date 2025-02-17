@@ -1,4 +1,4 @@
-import { TeamStatistics } from "@/type/NBA/gameTeams";
+import { TeamStatistics } from "@/type/NBA/gameTeamStatistics";
 
 export const fetchGameStatistics = async (gameId: number): Promise<TeamStatistics[]> => {
   const url = `https://v1.basketball.api-sports.io/games/statistics/teams`;

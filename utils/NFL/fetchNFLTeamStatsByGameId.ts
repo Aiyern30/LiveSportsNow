@@ -1,9 +1,9 @@
-import { TeamStatistics } from "@/type/NBA/gameTeamStatistics";
+import { NFLTeamStatistics } from "@/type/NFL/gameTeamStatistics";
 
-export const fetchNBATeamStatsByGameId = async (
+export const fetchNFLTeamStatsByGameId = async (
   gameId: string
-): Promise<TeamStatistics[]> => {
-  const url = "https://v1.basketball.api-sports.io/games/statistics/teams";
+): Promise<NFLTeamStatistics[]> => {
+  const url = "https://v1.american-football.api-sports.io/games/statistics/teams";
   const headers = {
     "x-apisports-key": process.env.NEXT_PUBLIC_API_SPORTS_KEY || "",
   };
@@ -21,7 +21,7 @@ export const fetchNBATeamStatsByGameId = async (
     });
 
     if (!response.ok) {
-      throw new Error(`Error fetching NBA Team stats: ${response.status} - ${response.statusText}`);
+      throw new Error(`Error fetching NFL Team stats: ${response.status} - ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -34,10 +34,10 @@ export const fetchNBATeamStatsByGameId = async (
       throw new Error("Invalid response structure from API.");
     }
 
-    console.log("Fetched NBA Team Stats:", data.response);
+    console.log("Fetched NFL Team Stats:", data.response);
 
-    return data.response as TeamStatistics[];
+    return data.response as NFLTeamStatistics[];
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to fetch NBA Team stats.");
+    throw new Error(error instanceof Error ? error.message : "Failed to fetch NFL Team stats.");
   }
 };

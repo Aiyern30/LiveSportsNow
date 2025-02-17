@@ -7,7 +7,7 @@ import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGa
 import { PlayerStats } from "@/type/NBA/gamePlayer";
 import ScoresDialog from "./ScoresDialog";
 import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
-import { TeamStatistics } from "@/type/NBA/gameTeams";
+import { TeamStatistics } from "@/type/NBA/gameTeamStatistics";
 import { useRouter } from "next/navigation";
 
 interface ListsProps {
