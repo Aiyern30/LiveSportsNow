@@ -2,11 +2,13 @@ import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import { useDeviceType } from "@/lib/useDevicesType";
 import { Button } from "@/components/ui";
-// import { PlayerStats } from "@/type/NBA/gamePlayer";
 import { useRouter } from "next/navigation";
 import { NFLGame } from "@/type/NFL/game";
 import { fetchNFLTeamStatsByGameId } from "@/utils/NFL/fetchNFLTeamStatsByGameId";
 import { NFLTeamStatistics } from "@/type/NFL/gameTeamStatistics";
+import { NFLPlayerStatistics } from "@/type/NFL/gamePlayer";
+import ScoresDialog from "./ScoresDialog";
+import { fetchNFLPlayerStatsByGameId } from "@/utils/NFL/fetchNFLPlayerStatsByGameId";
 
 interface ListsProps {
   filteredGames: NFLGame[];
@@ -16,21 +18,21 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
   const router = useRouter();
 
   const { isMobile, isDesktop } = useDeviceType();
-  // const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
-  // const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
+  const [homePlayers, setHomePlayers] = useState<NFLPlayerStatistics[]>([]);
+  const [awayPlayers, setAwayPlayers] = useState<NFLPlayerStatistics[]>([]);
   const [homeTeamStats, setHomeTeamStats] = useState<NFLTeamStatistics[]>([]);
   const [awayTeamStats, setAwayTeamStats] = useState<NFLTeamStatistics[]>([]);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  // const selectedGame = filteredGames.find(
-  //   (game) => game.game.id === selectedGameId
-  // );
+  const selectedGame = filteredGames.find(
+    (game) => game.game.id === selectedGameId
+  );
 
   useEffect(() => {
     const getNBAPlayerStats = async () => {
       if (selectedGameId) {
         try {
-          const data = await fetchNFLTeamStatsByGameId(selectedGameId);
+          const data = await fetchNFLPlayerStatsByGameId(selectedGameId);
 
           if (data.length > 0) {
             // Get the team IDs from the selected game
@@ -39,16 +41,16 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
             );
             if (!game) return;
 
-            // const homeTeamId = game.teams.home.id;
-            // const awayTeamId = game.teams.away.id;
+            const homeTeamId = game.teams.home.id;
+            const awayTeamId = game.teams.away.id;
 
-            // // Filter players by team
-            // setHomePlayers(
-            //   data.filter((player) => player.team.id === homeTeamId)
-            // );
-            // setAwayPlayers(
-            //   data.filter((player) => player.team.id === awayTeamId)
-            // );
+            // Filter players by team
+            setHomePlayers(
+              data.filter((player) => player.team.id === homeTeamId)
+            );
+            setAwayPlayers(
+              data.filter((player) => player.team.id === awayTeamId)
+            );
           }
         } catch (error) {
           console.log("Error fetching player stats:", error);
@@ -311,7 +313,7 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
         </div>
       ))}
 
-      {/* {dialogOpen && selectedGame && (
+      {dialogOpen && selectedGame && (
         <ScoresDialog
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}
@@ -322,7 +324,7 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
           homeScore={selectedGame?.scores.home.total ?? 0}
           awayScore={selectedGame?.scores.away.total ?? 0}
         />
-      )} */}
+      )}
     </div>
   );
 };
