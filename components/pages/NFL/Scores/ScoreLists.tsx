@@ -2,12 +2,11 @@ import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import { useDeviceType } from "@/lib/useDevicesType";
 import { Button } from "@/components/ui";
-import { fetchNBAPlayerStatsByGameId } from "@/utils/NBA/fetchNBAPlayerStatsByGameId";
 // import { PlayerStats } from "@/type/NBA/gamePlayer";
-// import { fetchNBATeamStatsByGameId } from "@/utils/NBA/fetchNBATeamStatsByGameId";
-// import { TeamStatistics } from "@/type/NBA/gameTeams";
 import { useRouter } from "next/navigation";
 import { NFLGame } from "@/type/NFL/game";
+import { fetchNFLTeamStatsByGameId } from "@/utils/NFL/fetchNFLTeamStatsByGameId";
+import { NFLTeamStatistics } from "@/type/NFL/gameTeamStatistics";
 
 interface ListsProps {
   filteredGames: NFLGame[];
@@ -19,8 +18,8 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
   const { isMobile, isDesktop } = useDeviceType();
   // const [homePlayers, setHomePlayers] = useState<PlayerStats[]>([]);
   // const [awayPlayers, setAwayPlayers] = useState<PlayerStats[]>([]);
-  // const [homeTeamStats, setHomeTeamStats] = useState<TeamStatistics[]>([]);
-  // const [awayTeamStats, setAwayTeamStats] = useState<TeamStatistics[]>([]);
+  const [homeTeamStats, setHomeTeamStats] = useState<NFLTeamStatistics[]>([]);
+  const [awayTeamStats, setAwayTeamStats] = useState<NFLTeamStatistics[]>([]);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   // const selectedGame = filteredGames.find(
@@ -31,7 +30,7 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
     const getNBAPlayerStats = async () => {
       if (selectedGameId) {
         try {
-          const data = await fetchNBAPlayerStatsByGameId(selectedGameId);
+          const data = await fetchNFLTeamStatsByGameId(selectedGameId);
 
           if (data.length > 0) {
             // Get the team IDs from the selected game
@@ -59,21 +58,21 @@ const ScoreLists: FC<ListsProps> = ({ filteredGames }) => {
     const getNBATeamStats = async () => {
       if (selectedGameId) {
         try {
-          // const data = await fetchNBATeamStatsByGameId(selectedGameId);
+          const data = await fetchNFLTeamStatsByGameId(selectedGameId);
           const game = filteredGames.find(
             (game) => game.game.id === selectedGameId
           );
           if (!game) return;
 
-          // const homeTeamId = game.teams.home.id;
-          // const awayTeamId = game.teams.away.id;
+          const homeTeamId = game.teams.home.id;
+          const awayTeamId = game.teams.away.id;
 
-          // setHomeTeamStats(
-          //   data.filter((teamStat) => teamStat.team.id === homeTeamId)
-          // );
-          // setAwayTeamStats(
-          //   data.filter((teamStat) => teamStat.team.id === awayTeamId)
-          // );
+          setHomeTeamStats(
+            data.filter((teamStat) => teamStat.team.id === homeTeamId)
+          );
+          setAwayTeamStats(
+            data.filter((teamStat) => teamStat.team.id === awayTeamId)
+          );
         } catch (error) {
           console.log("Error fetching team stats:", error);
         }
