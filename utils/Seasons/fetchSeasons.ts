@@ -1,4 +1,4 @@
-type SportType = "BASKETBALL" | "BASEBALL" | "FOOTBALL" | "NFL";
+import { SportType } from "@/type/SportType";
 
 const API_BASE_URLS: Record<SportType, string> = {
   BASKETBALL: "https://v1.basketball.api-sports.io/seasons",

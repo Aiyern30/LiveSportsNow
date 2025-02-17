@@ -34,7 +34,8 @@ export const SeasonProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const pathname = usePathname();
-  const sportType = SPORT_TYPE_MAP[pathname];
+  const normalizedPathname = pathname.replace(/\/$/, "");
+  const sportType = SPORT_TYPE_MAP[normalizedPathname];
 
   const defaultSeason = sportType ? DEFAULT_SEASON_MAP[sportType] : null;
 
@@ -45,27 +46,28 @@ export const SeasonProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (!sportType) return;
 
-    const storedSeasons = localStorage.getItem(`seasons_${sportType}`);
-    const storedSeason = localStorage.getItem(`selectedSeason_${sportType}`);
+    console.log(`Fetching seasons for sportType: ${sportType}`);
 
-    if (storedSeasons) {
-      setSeasons(JSON.parse(storedSeasons));
-    } else {
-      fetchSeasons(sportType)
-        .then((fetchedSeasons) => {
+    fetchSeasons(sportType)
+      .then((fetchedSeasons) => {
+        console.log("Fetched Seasons from API:", fetchedSeasons);
+
+        if (fetchedSeasons.length > 0) {
           setSeasons(fetchedSeasons);
           localStorage.setItem(
             `seasons_${sportType}`,
             JSON.stringify(fetchedSeasons)
           );
-        })
-        .catch((error) => {
-          setIsApiError(true);
-          console.error("Error fetching seasons:", error);
-        });
-    }
+        } else {
+          console.warn("Fetched seasons are empty!");
+        }
+      })
+      .catch((error) => {
+        setIsApiError(true);
+        console.error("Error fetching seasons:", error);
+      });
 
-    setSelectedSeason(storedSeason || defaultSeason);
+    setSelectedSeason(defaultSeason);
   }, [defaultSeason, sportType]);
 
   const handleSetSelectedSeason = (season: string) => {
